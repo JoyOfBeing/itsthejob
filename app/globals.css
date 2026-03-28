@@ -527,6 +527,89 @@ a { color: inherit; }
   border-color: var(--dark-text);
 }
 
+/* Magic Shows — Golden Ticket portal */
+.magic-portal {
+  margin-top: 1rem;
+  animation: answerFadeIn 0.5s ease forwards;
+  opacity: 0;
+}
+.magic-code-section {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.magic-input {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--dark-border);
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  font-family: inherit;
+  background: var(--dark-surface);
+  color: var(--dark-text);
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+.magic-input:focus {
+  border-color: var(--glow-teal);
+}
+.magic-input::placeholder {
+  color: var(--dark-muted);
+}
+.magic-code-msg {
+  font-size: 0.85rem;
+  color: var(--glow-teal);
+  font-style: italic;
+}
+.magic-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
+  color: var(--dark-muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+}
+.magic-divider::before,
+.magic-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--dark-border);
+}
+.magic-referral-label {
+  font-size: 0.9rem;
+  color: var(--dark-muted);
+  margin-bottom: 0.75rem;
+  font-style: italic;
+}
+.magic-btn {
+  padding: 0.5rem 1.25rem;
+  background: var(--dark-surface);
+  color: var(--dark-text);
+  border: 1px solid var(--dark-border);
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 0.25rem;
+}
+.magic-btn:hover {
+  border-color: var(--glow-teal);
+  color: var(--glow-teal);
+}
+.magic-confirmed {
+  font-size: 1rem;
+  font-style: italic;
+  background: linear-gradient(135deg, var(--glow-gold), var(--glow-chartreuse), var(--glow-teal), var(--glow-purple), var(--glow-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 /* Footer link easter egg transitions */
 .footer-links a {
   transition: color 0.3s;

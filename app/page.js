@@ -257,6 +257,12 @@ export default function Home() {
   const [questionAnswers] = useState(() => buildAnswers());
   const [waitlistEmail, setWaitlistEmail] = useState('');
   const [waitlistSubmitted, setWaitlistSubmitted] = useState(false);
+  const [magicOpen, setMagicOpen] = useState(false);
+  const [magicCode, setMagicCode] = useState('');
+  const [magicCodeMsg, setMagicCodeMsg] = useState('');
+  const [magicReferralEmail, setMagicReferralEmail] = useState('');
+  const [magicReferralName, setMagicReferralName] = useState('');
+  const [magicReferralSent, setMagicReferralSent] = useState(false);
   const intervalRef = useRef(null);
   const doorsRef = useRef(null);
   const searchTimeoutRef = useRef(null);
@@ -651,7 +657,68 @@ export default function Home() {
             <p className="door-desc">
               We can&apos;t explain these. You have to come.
             </p>
-            <a href="#" onClick={handleMagicClick} className="door-link">{magicText}</a>
+            {!magicOpen ? (
+              <a href="#" onClick={(e) => { e.preventDefault(); setMagicOpen(true); }} className="door-link">Got a golden ticket?</a>
+            ) : (
+              <div className="magic-portal">
+                <div className="magic-code-section">
+                  <input
+                    type="text"
+                    placeholder="Enter invite code"
+                    value={magicCode}
+                    onChange={(e) => setMagicCode(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && magicCode) {
+                        // TODO: validate against real codes
+                        setMagicCodeMsg('That\u2019s not it. But we like that you tried.');
+                        setTimeout(() => setMagicCodeMsg(''), 3000);
+                      }
+                    }}
+                    className="magic-input"
+                  />
+                  {magicCodeMsg && <span className="magic-code-msg">{magicCodeMsg}</span>}
+                </div>
+                <div className="magic-divider">
+                  <span>or</span>
+                </div>
+                {!magicReferralSent ? (
+                  <div className="magic-referral">
+                    <p className="magic-referral-label">Know someone who knows someone?</p>
+                    <form onSubmit={(e) => {
+                      e.preventDefault();
+                      if (magicReferralEmail) {
+                        supabase
+                          .from('waitlist')
+                          .insert({
+                            email: magicReferralEmail,
+                            source: 'magic_show_referral',
+                          })
+                          .then(() => setMagicReferralSent(true));
+                      }
+                    }}>
+                      <input
+                        type="text"
+                        placeholder="Your name"
+                        value={magicReferralName}
+                        onChange={(e) => setMagicReferralName(e.target.value)}
+                        className="magic-input"
+                      />
+                      <input
+                        type="email"
+                        placeholder="Your email"
+                        value={magicReferralEmail}
+                        onChange={(e) => setMagicReferralEmail(e.target.value)}
+                        className="magic-input"
+                        required
+                      />
+                      <button type="submit" className="magic-btn">Put me on the list</button>
+                    </form>
+                  </div>
+                ) : (
+                  <p className="magic-confirmed">You&apos;ll know when you know.</p>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="door">
