@@ -653,6 +653,16 @@ export default function Home() {
             <a href="#" onClick={handleMagicClick} className="door-link">{magicText}</a>
           </div>
 
+          <div className="door">
+            <div className="door-dept">Department of Belief</div>
+            <h2 className="door-title">Invest</h2>
+            <p className="door-desc">
+              This isn&apos;t a pitch. It&apos;s an invitation to fund the species-level upgrade.
+              We&apos;re building the new human economy — and we&apos;re raising the money to do it.
+            </p>
+            <a href="https://job-deck-indol.vercel.app" target="_blank" rel="noopener noreferrer" className="door-link">See the deck</a>
+          </div>
+
           <div className="door door-redacted">
             <div className="door-dept">New departments opening soon</div>
             <h2 className="door-title">{redactedWord}</h2>
