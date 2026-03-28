@@ -697,8 +697,8 @@ export default function Home() {
         <div className="about-inner">
           <div className="about-label">About Us</div>
           <p>
-            It&apos;s a church. It&apos;s a marketplace. It&apos;s a consulting firm.
-            It&apos;s an incubator. It&apos;s a species-level intervention
+            We&apos;re a church. We&apos;re a marketplace. We&apos;re a consulting firm.
+            We&apos;re an incubator. We&apos;re a species-level intervention
             disguised as a job board.
           </p>
           <p>
