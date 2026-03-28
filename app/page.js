@@ -506,6 +506,7 @@ export default function Home() {
 
       {/* ===== THE QUESTION ===== */}
       <section className="question">
+        <p className="question-headline">Our vision statement is actually a question:</p>
         <p
           className="question-text"
           onClick={() => {

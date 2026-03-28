@@ -277,6 +277,15 @@ a { color: inherit; }
   color: var(--white-text);
 }
 
+.question-headline {
+  font-size: 0.85rem !important;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--white-muted) !important;
+  font-weight: 600 !important;
+  margin-bottom: 1.5rem !important;
+}
+
 .question-text {
   transition: all 0.4s ease;
   cursor: pointer;
