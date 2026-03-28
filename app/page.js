@@ -646,7 +646,7 @@ export default function Home() {
           </div>
 
           <div className="door">
-            <div className="door-dept">Department of ????</div>
+            <div className="door-dept">Department of You Had to Be There</div>
             <h2 className="door-title">Magic Shows</h2>
             <p className="door-desc">
               We can&apos;t explain these. You have to come.
