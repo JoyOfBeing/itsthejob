@@ -664,7 +664,7 @@ export default function Home() {
                 <div className="magic-code-section">
                   <input
                     type="text"
-                    placeholder="Enter invite code"
+                    placeholder="Enter Golden Ticket code"
                     value={magicCode}
                     onChange={(e) => setMagicCode(e.target.value)}
                     onKeyDown={(e) => {
@@ -683,7 +683,7 @@ export default function Home() {
                 </div>
                 {!magicReferralSent ? (
                   <div className="magic-referral">
-                    <p className="magic-referral-label">Know someone who knows someone?</p>
+                    <p className="magic-referral-label">Someone told you. They weren&apos;t supposed to.</p>
                     <form onSubmit={(e) => {
                       e.preventDefault();
                       if (magicReferralEmail) {
@@ -711,7 +711,7 @@ export default function Home() {
                         className="magic-input"
                         required
                       />
-                      <button type="submit" className="magic-btn">Put me on the list</button>
+                      <button type="submit" className="magic-btn">Put me on the list anyway</button>
                     </form>
                   </div>
                 ) : (
