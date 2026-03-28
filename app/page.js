@@ -654,7 +654,7 @@ export default function Home() {
           </div>
 
           <div className="door">
-            <div className="door-dept">Department of Belief</div>
+            <div className="door-dept">Department of Putting Your Money Where Your Species Is</div>
             <h2 className="door-title">Invest</h2>
             <p className="door-desc">
               This isn&apos;t a pitch. It&apos;s an invitation to fund the species-level upgrade.
