@@ -657,11 +657,10 @@ export default function Home() {
             <div className="door-dept">Department of Holy Ground</div>
             <h2 className="door-title">MagicShowLand</h2>
             <p className="door-desc">
-              Part Meow Wolf. Part retreat center. Part Hogwarts. Physical locations
-              in abandoned churches, castles, and defunct colleges — transformed into
-              IRL training grounds for the new humans. Transition centers where
-              displacement becomes reinvention, grief becomes fuel, and the work of
-              being human has a building with your name on the door.
+              If Meow Wolf and a monastery had a baby and raised it in an abandoned
+              castle. Physical spaces where humans go to remember what they are.
+              Immersive. Transformational. Weird on purpose. You&apos;ll leave different
+              than you came in.
             </p>
             <a href="#" onClick={(e) => { e.preventDefault(); }} className="door-link">Locations coming soon</a>
           </div>
