@@ -624,6 +624,17 @@ export default function Home() {
           </div>
 
           <div className="door">
+            <div className="door-dept">Department of Businessing Differently</div>
+            <h2 className="door-title">Business 3.0</h2>
+            <p className="door-desc">
+              The operating system for companies that want to be organisms, not machines.
+              AI runs ops. Humans do human work. Send your people through J.O.B. and get back
+              something better than employees.
+            </p>
+            <a href="#" onClick={handleB3Click} className="door-link">{b3Text}</a>
+          </div>
+
+          <div className="door">
             <div className="door-dept">Department of Getting Paid to Be Yourself</div>
             <h2 className="door-title">The J.O.B. Board</h2>
             <p className="door-desc">
@@ -632,17 +643,6 @@ export default function Home() {
               Be a hype person for ten minutes. That&apos;s it. That&apos;s the job.
             </p>
             <a href="#" onClick={handleJobBoardClick} className="door-link">{jobBoardText}</a>
-          </div>
-
-          <div className="door">
-            <div className="door-dept">Department of Doing It Differently</div>
-            <h2 className="door-title">Business 3.0</h2>
-            <p className="door-desc">
-              The operating system for companies that want to be organisms, not machines.
-              AI runs ops. Humans do human work. Send your people through J.O.B. and get back
-              something better than employees.
-            </p>
-            <a href="#" onClick={handleB3Click} className="door-link">{b3Text}</a>
           </div>
 
           <div className="door">
