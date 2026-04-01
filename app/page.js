@@ -8,9 +8,9 @@ const REDACTED_WORDS = ['SpiritTech', 'The Portal', 'Mycelium', '????????'];
 
 // --- QUESTION ANSWERS (fixed 3) ---
 const QUESTION_ANSWERS = [
-  'The software update is for the humans this time.',
-  'We don\u2019t need new tools. We need new humans.',
-  'You\u2019re the upgrade.',
+  'Evolution wasn\u2019t supposed to be this fast. But here we are.',
+  'The last upgrade you\u2019ll ever need. It\u2019s you.',
+  'The update isn\u2019t downloading. It\u2019s waking up.',
 ];
 
 // --- SEARCH INTELLIGENCE ---
