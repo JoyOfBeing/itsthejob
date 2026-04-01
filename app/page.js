@@ -8,9 +8,9 @@ const REDACTED_WORDS = ['SpiritTech', 'The Portal', 'Mycelium', '????????'];
 
 // --- QUESTION ANSWERS (fixed 3) ---
 const QUESTION_ANSWERS = [
-  'AI got the busy work. We got paid for presence.',
-  'Businesses started measuring aliveness as a KPI.',
-  'I got to be myself without getting fired for it.',
+  'The software update is for the humans this time.',
+  'We don\u2019t need new tools. We need new humans.',
+  'You\u2019re the upgrade.',
 ];
 
 // --- SEARCH INTELLIGENCE ---
@@ -401,12 +401,12 @@ export default function Home() {
           }}
           style={{ cursor: questionClicks < questionAnswers.length ? 'pointer' : 'default' }}
         >
-          What happens when being human <em>is</em> the job?
+          Welcome to a species-level upgrade.
         </p>
         {questionClicks < questionAnswers.length && (
           <span className="question-hint">
-            {questionClicks === 0 ? 'answer it.' :
-             questionClicks < 2 ? 'keep going.' :
+            {questionClicks === 0 ? 'click to install.' :
+             questionClicks < 2 ? 'upgrading...' :
              'one more.'}
           </span>
         )}
