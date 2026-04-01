@@ -392,87 +392,54 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* ===== HERO + QUESTION ===== */}
+      {/* ===== HERO ===== */}
       <section className="hero">
         <h1 className="hero-title">Being human<br /><span className="hero-gradient">is the job now.</span><br /><span className="hero-sub">The rest is being automated.</span></h1>
-        <p
-          className="question-text"
-          onClick={() => {
-            if (questionClicks < questionAnswers.length) {
-              setQuestionClicks(prev => prev + 1);
-            }
-          }}
-          style={{ cursor: questionClicks < questionAnswers.length ? 'pointer' : 'default' }}
-        >
-          Welcome to a species-level upgrade.
+        <p className="hero-narrative">
+          Work never taught us how to be human. It fragmented us. So did religion.
+          <br /><br />
+          <span className="hero-gradient">Our J.O.B. is the integration.</span>
         </p>
-        {questionClicks < questionAnswers.length && (
-          <span className="question-hint">
-            {questionClicks === 0 ? 'click.' :
-             questionClicks < 5 ? 'keep going.' :
-             'one more.'}
-          </span>
-        )}
-
-        {questionClicks > 0 && (
-          <div className="question-answers">
-            {questionAnswers.slice(0, questionClicks).map((answer, i) => (
-              <div
-                key={i}
-                className={`question-answer ${i === questionClicks - 1 ? 'latest' : ''} ${i === 5 ? 'gradient-answer' : ''}`}
-                style={{ animationDelay: '0s' }}
+        <div className="hero-cta">
+          <p className="rco-explain">
+            We&apos;re calling in individuals and organizations committed to exploring
+            what it means to be fully human.
+          </p>
+          {!waitlistSubmitted ? (
+            <>
+              <p className="rco-ask">If that&apos;s you, tell us you were here:</p>
+              <form
+                className="waitlist-form"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (waitlistEmail) {
+                    supabase
+                      .from('waitlist')
+                      .insert({ email: waitlistEmail, source: 'rco_interest' })
+                      .then(({ error }) => {
+                        if (error && error.code === '23505') {
+                          // Duplicate email — still show success
+                        }
+                        setWaitlistSubmitted(true);
+                      });
+                  }
+                }}
               >
-                {answer}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {questionClicks >= 6 && !waitlistSubmitted && (
-          <div className="question-cta">
-            <p className="rco-explain">
-              We&apos;re calling in individuals and organizations who feel called to deeply
-              explore this question. If that&apos;s you, there are a handful of ways to get
-              going with us. Pick your Trojan Horse below.
-            </p>
-            <p className="rco-ask">
-              But first, tell us you were here.
-            </p>
-            <form
-              className="waitlist-form"
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (waitlistEmail) {
-                  supabase
-                    .from('waitlist')
-                    .insert({ email: waitlistEmail, source: 'rco_interest' })
-                    .then(({ error }) => {
-                      if (error && error.code === '23505') {
-                        // Duplicate email — still show success
-                      }
-                      setWaitlistSubmitted(true);
-                    });
-                }
-              }}
-            >
-              <input
-                type="email"
-                placeholder="you@yourcompany.com"
-                value={waitlistEmail}
-                onChange={(e) => setWaitlistEmail(e.target.value)}
-                className="waitlist-input"
-                required
-              />
-              <button type="submit" className="waitlist-btn">was here</button>
-            </form>
-          </div>
-        )}
-
-        {waitlistSubmitted && (
-          <div className="question-cta">
+                <input
+                  type="email"
+                  placeholder="you@email.com"
+                  value={waitlistEmail}
+                  onChange={(e) => setWaitlistEmail(e.target.value)}
+                  className="waitlist-input"
+                  required
+                />
+                <button type="submit" className="waitlist-btn">was here</button>
+              </form>
+            </>
+          ) : (
             <p className="waitlist-confirmed">We see you. We&apos;ll be in touch.</p>
-          </div>
-        )}
+          )}
+        </div>
       </section>
 
       {/* ===== THE PORTAL — The threshold ===== */}

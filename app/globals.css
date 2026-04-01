@@ -145,6 +145,34 @@ a { color: inherit; }
   color: var(--white-text);
 }
 
+.hero-narrative {
+  max-width: 540px;
+  margin: 2.5rem auto 0;
+  font-size: 1.15rem;
+  font-weight: 400;
+  line-height: 1.8;
+  color: var(--white-muted);
+}
+
+.hero-narrative .hero-gradient {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.hero-cta {
+  max-width: 540px;
+  margin: 2.5rem auto 0;
+  text-align: center;
+}
+
+.hero-cta .rco-explain {
+  text-align: center;
+}
+
+.hero-cta .rco-ask {
+  text-align: center;
+}
+
 .hero-sub {
   display: block;
   font-size: 1.2rem;
