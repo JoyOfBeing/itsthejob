@@ -431,14 +431,9 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* ===== HERO ===== */}
+      {/* ===== HERO + QUESTION ===== */}
       <section className="hero">
-        <h1 className="hero-title">The machines took your job.<br /><span className="hero-gradient">Now the real work begins.</span></h1>
-      </section>
-
-      {/* ===== THE QUESTION ===== */}
-      <section className="question">
-        <span className="question-headline">Our vision statement is actually a question:</span>
+        <h1 className="hero-title">The machines took your job. <span className="hero-gradient">Now the real work begins.</span></h1>
         <p
           className="question-text"
           onClick={() => {

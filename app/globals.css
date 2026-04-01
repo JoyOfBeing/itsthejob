@@ -306,6 +306,13 @@ a { color: inherit; }
   color: var(--white-text);
 }
 
+/* Question inside hero */
+.hero .question-text {
+  margin-top: 2.5rem;
+  font-size: 1.3rem;
+  font-weight: 300;
+}
+
 .question-headline {
   display: block;
   font-size: 0.85rem;
