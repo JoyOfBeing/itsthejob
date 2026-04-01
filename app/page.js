@@ -6,57 +6,12 @@ import { supabase } from '../lib/supabase';
 const APPLY_WORDS = ['Apply now', 'Show up', 'Begin', 'Enter'];
 const REDACTED_WORDS = ['SpiritTech', 'The Portal', 'Mycelium', '????????'];
 
-// --- QUESTION ANSWERS (curated pool, 10 randomly selected per session) ---
-const QUESTION_POOL = [
-  // Personal
-  'Everything.',
-  'I stopped needing permission.',
-  'I made $40 sitting with a stranger who needed to cry.',
-  'I quit performing and started earning more.',
-  'I stopped faking my personality at work.',
-  'I got paid to hold space for someone\'s worst day.',
-  'I remembered what I was good at before the resume.',
-  'I stopped apologizing for being sensitive.',
-  'I used my body as a tool. On purpose. With consent.',
-  'I started crying at work. They promoted me.',
-
-  // Systemic
-  'Companies started hiring for wisdom.',
-  'A new economy. Built on what machines can\'t do.',
-  'Grief became a professional skill.',
-  'We stopped calling it soft.',
-  'The org chart flipped upside down.',
-  'HR became actually human.',
-  'An elder made more than a CEO.',
-  'Businesses started measuring aliveness.',
-  'Someone listed "nervous system regulation" on a job board. And got hired.',
-  'A company replaced its mission statement with a question.',
-  'The economy started rewarding presence.',
-  'We stopped outsourcing the human parts.',
-
-  // Cosmic
-  'Consciousness became the product.',
-  'We remembered.',
-  'The species leveled up.',
-  'The machines got the busy work. We got the real work.',
-  'Being alive became the most valuable skill on earth.',
-  'The job description became: exist fully.',
-  'A new resource emerged. It was us.',
-  'We built an economy that doesn\'t need you to pretend.',
-  'The question stopped being rhetorical.',
-  'Something shifted. Quietly. Everywhere.',
+// --- QUESTION ANSWERS (fixed 3) ---
+const QUESTION_ANSWERS = [
+  'AI got the busy work. We got paid for presence.',
+  'Businesses started measuring aliveness as a KPI.',
+  'I got to be myself without getting fired for it.',
 ];
-
-const QUESTION_FIXED = [
-  'A company replaced its mission statement with a question.',
-  'The machines got the busy work. We got the real work.',
-];
-
-function buildAnswers() {
-  const remaining = QUESTION_POOL.filter(a => !QUESTION_FIXED.includes(a));
-  const shuffled = [...remaining].sort(() => Math.random() - 0.5).slice(0, 8);
-  return [...QUESTION_FIXED, ...shuffled];
-}
 
 // --- SEARCH INTELLIGENCE ---
 // Exact phrases matched first, then category keywords, then fallback
@@ -254,7 +209,7 @@ export default function Home() {
   const [searchResponse, setSearchResponse] = useState('');
   const [searchLocked, setSearchLocked] = useState(false);
   const [questionClicks, setQuestionClicks] = useState(0);
-  const [questionAnswers] = useState(() => buildAnswers());
+  const questionAnswers = QUESTION_ANSWERS;
   const [waitlistEmail, setWaitlistEmail] = useState('');
   const [waitlistSubmitted, setWaitlistSubmitted] = useState(false);
   const [magicOpen, setMagicOpen] = useState(false);
@@ -448,9 +403,8 @@ export default function Home() {
         {questionClicks < questionAnswers.length && (
           <span className="question-hint">
             {questionClicks === 0 ? 'answer it.' :
-             questionClicks < 3 ? 'keep going.' :
-             questionClicks < 6 ? 'deeper.' :
-             'almost there.'}
+             questionClicks < 2 ? 'keep going.' :
+             'one more.'}
           </span>
         )}
 
@@ -459,7 +413,7 @@ export default function Home() {
             {questionAnswers.slice(0, questionClicks).map((answer, i) => (
               <div
                 key={i}
-                className={`question-answer ${i === questionClicks - 1 ? 'latest' : ''} ${i >= 7 ? 'gradient-answer' : ''}`}
+                className={`question-answer ${i === questionClicks - 1 ? 'latest' : ''} ${i === 2 ? 'gradient-answer' : ''}`}
                 style={{ animationDelay: '0s' }}
               >
                 {answer}
@@ -468,20 +422,8 @@ export default function Home() {
           </div>
         )}
 
-        {questionClicks >= 5 && !waitlistSubmitted && (
+        {questionClicks >= 3 && !waitlistSubmitted && (
           <div className="question-cta">
-            <p className="question-cta-text">
-              These aren&apos;t hypotheticals. This is happening.
-            </p>
-            <p className="rco-explain">
-              We&apos;re building the <strong>Regenerative Community Organism</strong> — a new model where
-              companies invest in the full humanity of their people. Not perks. Not ping pong.
-              Nervous system work. Elder guidance. Real human infrastructure.
-            </p>
-            <p className="rco-explain">
-              The ROI? Humans who are actually alive at work. Teams that don&apos;t burn out.
-              Organizations that mean it when they say &ldquo;people first.&rdquo;
-            </p>
             <p className="rco-explain">
               We&apos;re calling in individuals and organizations who feel called to deeply
               explore this question. If that&apos;s you, there are a handful of ways to get
