@@ -591,7 +591,7 @@ export default function Home() {
               Unorganized religion where there is no deity or dogma, just the rediscovery of
               your personal sovereignty. Integrating the fragmentation of work and soul.
             </p>
-            <a href="https://job-church.vercel.app" target="_blank" rel="noopener noreferrer" className="door-link">Become a member</a>
+            <a href="https://apply.itsthejob.com" target="_blank" rel="noopener noreferrer" className="door-link">Become a member</a>
           </div>
 
           <div className="door">
@@ -602,7 +602,7 @@ export default function Home() {
               AI runs ops. Humans do human work.
               The companies that survive the next decade won&apos;t look like companies at all.
             </p>
-            <a href="#" onClick={handleB3Click} className="door-link">{b3Text}</a>
+            <a href="https://business-30.vercel.app/" target="_blank" rel="noopener noreferrer" className="door-link">Evolve your company</a>
           </div>
 
           <div className="door">
@@ -923,9 +923,9 @@ export default function Home() {
         <div className="footer-inner">
           <div className="footer-brand">J.O.B. &mdash; The New Human Resources</div>
           <div className="footer-links">
-            <a href="https://job-church.vercel.app" target="_blank" rel="noopener noreferrer">The Church</a>
+            <a href="https://apply.itsthejob.com" target="_blank" rel="noopener noreferrer">The Church</a>
             <a href="#" onClick={handleJobBoardClick}>{jobBoardText === 'Browse listings' ? 'The J.O.B. Board' : jobBoardText}</a>
-            <a href="#" onClick={handleB3Click}>{b3Text === 'Evolve your company' ? 'Business 3.0' : b3Text}</a>
+            <a href="https://business-30.vercel.app/" target="_blank" rel="noopener noreferrer">Business 3.0</a>
             <a href="#" onClick={handleMagicClick}>{magicText === 'Get invited' ? 'Magic Shows' : magicText}</a>
             <a href="#invest" onClick={(e) => { e.preventDefault(); investRef.current?.scrollIntoView({ behavior: 'smooth' }); }}>Investors</a>
           </div>
