@@ -8,9 +8,12 @@ const REDACTED_WORDS = ['SpiritTech', 'The Portal', 'Mycelium', '????????'];
 
 // --- QUESTION ANSWERS (fixed 3) ---
 const QUESTION_ANSWERS = [
-  'Evolution wasn\u2019t supposed to be this fast. But here we are.',
-  'The last upgrade you\u2019ll ever need. It\u2019s you.',
-  'The update isn\u2019t downloading. It\u2019s waking up.',
+  'Work never taught us how to be human. At best, it fragmented us. At worst, it punished us for expressing who we really are.',
+  'It prioritized our brains over our bodies. Our hands over our hearts. And, somewhere along the way, we forgot to care about all those parts ourselves. Because who was going to pay for it?',
+  'Now, we\u2019re all paying for it.',
+  'And now that AI is here, millions of people will be without jobs. And the ones that remain will be paid to do the things only humans can do.',
+  'It\u2019s easy to imagine the worst case scenario here. But we prefer the best case one:',
+  'That you step into your job. The one that\u2019s always been yours.',
 ];
 
 // --- SEARCH INTELLIGENCE ---
@@ -405,8 +408,8 @@ export default function Home() {
         </p>
         {questionClicks < questionAnswers.length && (
           <span className="question-hint">
-            {questionClicks === 0 ? 'click to install.' :
-             questionClicks < 2 ? 'upgrading...' :
+            {questionClicks === 0 ? 'click.' :
+             questionClicks < 5 ? 'keep going.' :
              'one more.'}
           </span>
         )}
@@ -416,7 +419,7 @@ export default function Home() {
             {questionAnswers.slice(0, questionClicks).map((answer, i) => (
               <div
                 key={i}
-                className={`question-answer ${i === questionClicks - 1 ? 'latest' : ''} ${i === 2 ? 'gradient-answer' : ''}`}
+                className={`question-answer ${i === questionClicks - 1 ? 'latest' : ''} ${i === 5 ? 'gradient-answer' : ''}`}
                 style={{ animationDelay: '0s' }}
               >
                 {answer}
@@ -425,7 +428,7 @@ export default function Home() {
           </div>
         )}
 
-        {questionClicks >= 3 && !waitlistSubmitted && (
+        {questionClicks >= 6 && !waitlistSubmitted && (
           <div className="question-cta">
             <p className="rco-explain">
               We&apos;re calling in individuals and organizations who feel called to deeply

@@ -370,12 +370,15 @@ a { color: inherit; }
 }
 
 .question-answer {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 400;
   color: var(--white-muted);
   animation: answerFadeIn 0.6s ease forwards;
   opacity: 0;
-  font-style: italic;
+  line-height: 1.7;
+  text-align: left;
+  max-width: 540px;
+  margin: 0 auto;
 }
 .question-answer.latest {
   color: var(--white-text);
