@@ -610,6 +610,11 @@ a { color: inherit; }
 .magic-input::placeholder {
   color: var(--dark-muted);
 }
+.magic-textarea {
+  resize: vertical;
+  min-height: 60px;
+  font-family: inherit;
+}
 .magic-code-msg {
   font-size: 0.85rem;
   color: var(--glow-teal);

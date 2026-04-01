@@ -201,7 +201,7 @@ export default function Home() {
   const [redactedWord, setRedactedWord] = useState('[REDACTED]');
   const [aiHover, setAiHover] = useState(false);
   const [magicText, setMagicText] = useState('Get invited');
-  const [b3Text, setB3Text] = useState('Bring your company');
+  const [b3Text, setB3Text] = useState('Evolve your company');
   const [redactedLinkText, setRedactedLinkText] = useState('Stay close');
   const [jobBoardText, setJobBoardText] = useState('Browse listings');
   const [ownText, setOwnText] = useState('Own a piece');
@@ -220,6 +220,9 @@ export default function Home() {
   const [magicReferralSent, setMagicReferralSent] = useState(false);
   const [investEmail, setInvestEmail] = useState('');
   const [investSent, setInvestSent] = useState(false);
+  const [magicReferralWhy, setMagicReferralWhy] = useState('');
+  const [mslHover, setMslHover] = useState(false);
+  const [jobBoardHover, setJobBoardHover] = useState(false);
   const intervalRef = useRef(null);
   const doorsRef = useRef(null);
   const searchTimeoutRef = useRef(null);
@@ -304,7 +307,7 @@ export default function Home() {
     e.preventDefault();
     setB3Text('We\u2019re still training the humans.');
     setTimeout(() => setB3Text('Check back when they\u2019re ready.'), 2500);
-    setTimeout(() => setB3Text('Bring your company'), 5000);
+    setTimeout(() => setB3Text('Evolve your company'), 5000);
   }
 
   function handleRedactedClick(e) {
@@ -492,7 +495,7 @@ export default function Home() {
               Unorganized religion where there is no deity or dogma, just the rediscovery of
               your personal sovereignty. Integrating the fragmentation of work and soul.
             </p>
-            <a href="https://job-church.vercel.app" target="_blank" rel="noopener noreferrer" className="door-link">Learn more</a>
+            <a href="https://job-church.vercel.app" target="_blank" rel="noopener noreferrer" className="door-link">Become a member</a>
           </div>
 
           <div className="door">
@@ -515,7 +518,13 @@ export default function Home() {
               that hard conversation.&rdquo; &ldquo;I&apos;ll draw you while you talk about
               your day.&rdquo; That&apos;s it. That&apos;s the job.
             </p>
-            <a href="#" onClick={handleJobBoardClick} className="door-link">{jobBoardText}</a>
+            <a
+              href="#"
+              onClick={handleJobBoardClick}
+              onMouseEnter={() => setJobBoardHover(true)}
+              onMouseLeave={() => setJobBoardHover(false)}
+              className="door-link"
+            >{jobBoardHover ? 'Patience. The machines would\u2019ve finished by now.' : 'WIP'}</a>
           </div>
 
           <div className="door">
@@ -559,6 +568,7 @@ export default function Home() {
                           .insert({
                             email: magicReferralEmail,
                             name: magicReferralName || null,
+                            note: magicReferralWhy || null,
                             source: 'magic_show_referral',
                           })
                           .then(() => setMagicReferralSent(true));
@@ -579,6 +589,13 @@ export default function Home() {
                         className="magic-input"
                         required
                       />
+                      <textarea
+                        placeholder="Why should we invite you to a show?"
+                        value={magicReferralWhy}
+                        onChange={(e) => setMagicReferralWhy(e.target.value)}
+                        className="magic-input magic-textarea"
+                        rows={3}
+                      />
                       <button type="submit" className="magic-btn">Put me on the list anyway</button>
                     </form>
                   </div>
@@ -598,7 +615,13 @@ export default function Home() {
               Immersive. Transformational. Weird on purpose. You&apos;ll leave different
               than you came in.
             </p>
-            <a href="#" onClick={(e) => { e.preventDefault(); }} className="door-link">Locations coming soon</a>
+            <a
+              href="#"
+              onClick={(e) => { e.preventDefault(); }}
+              onMouseEnter={() => setMslHover(true)}
+              onMouseLeave={() => setMslHover(false)}
+              className="door-link"
+            >{mslHover ? 'We\u2019re scouting castles. Literally.' : 'Locations coming soon'}</a>
           </div>
 
           <div className="door">
@@ -774,7 +797,7 @@ export default function Home() {
           <div className="footer-links">
             <a href="https://job-church.vercel.app" target="_blank" rel="noopener noreferrer">The Church</a>
             <a href="#" onClick={handleJobBoardClick}>{jobBoardText === 'Browse listings' ? 'The J.O.B. Board' : jobBoardText}</a>
-            <a href="#" onClick={handleB3Click}>{b3Text === 'Bring your company' ? 'Business 3.0' : b3Text}</a>
+            <a href="#" onClick={handleB3Click}>{b3Text === 'Evolve your company' ? 'Business 3.0' : b3Text}</a>
             <a href="#" onClick={handleMagicClick}>{magicText === 'Get invited' ? 'Magic Shows' : magicText}</a>
             <a href="#" onClick={handleOwnClick}>{ownText}</a>
             <a href="https://job-deck-indol.vercel.app" target="_blank" rel="noopener noreferrer">Investors</a>
