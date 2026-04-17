@@ -480,11 +480,12 @@ export default function Home() {
             />
           </div>
           <a
-            href="#invest"
-            onClick={(e) => { e.preventDefault(); investRef.current?.scrollIntoView({ behavior: 'smooth' }); }}
+            href="https://job-deck-indol.vercel.app"
+            target="_blank"
+            rel="noopener noreferrer"
             className="nav-investors"
           >
-            Investors
+            Invest
           </a>
           <a href="/pay" className="nav-investors">But who&apos;s gonna pay for it?</a>
         </div>
@@ -660,6 +661,7 @@ export default function Home() {
               We&apos;re the new human resources that will create the new human economy.
               Expressing interest doesn&apos;t commit you to anything — it just starts the conversation.
             </p>
+            <a href="https://job-deck-indol.vercel.app" target="_blank" rel="noopener noreferrer" className="magic-btn" style={{ display: 'inline-block', textAlign: 'center', textDecoration: 'none', marginBottom: '1.5rem' }}>Read the Pitch Deck</a>
             {investStatus === 'success' ? (
               <p className="magic-confirmed">You&apos;re in. We&apos;ll be in touch when the organism is ready for you.</p>
             ) : (
