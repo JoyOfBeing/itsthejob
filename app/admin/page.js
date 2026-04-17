@@ -94,7 +94,7 @@ function WaitlistTable({ data }) {
 
 export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
-  const [tab, setTab] = useState('investors');
+  const [tab, setTab] = useState('was-here');
   const [investors, setInvestors] = useState([]);
   const [waitlist, setWaitlist] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -129,17 +129,21 @@ export default function AdminPage() {
           <a href="/" className="ij-admin-back">&larr; Back to site</a>
         </div>
         <div className="ij-admin-counts">
+          <span className="ij-admin-count">{waitlist.filter(w => w.source === 'rco_interest').length} was here</span>
           <span className="ij-admin-count">{investors.length} investors</span>
-          <span className="ij-admin-count">{waitlist.length} waitlist</span>
+          <span className="ij-admin-count">{waitlist.length} total waitlist</span>
         </div>
       </div>
 
       <div className="ij-admin-tabs">
+        <button className={`ij-admin-tab ${tab === 'was-here' ? 'active' : ''}`} onClick={() => setTab('was-here')}>
+          Was Here ({waitlist.filter(w => w.source === 'rco_interest').length})
+        </button>
         <button className={`ij-admin-tab ${tab === 'investors' ? 'active' : ''}`} onClick={() => setTab('investors')}>
           Investors ({investors.length})
         </button>
         <button className={`ij-admin-tab ${tab === 'waitlist' ? 'active' : ''}`} onClick={() => setTab('waitlist')}>
-          Waitlist ({waitlist.length})
+          All Waitlist ({waitlist.length})
         </button>
       </div>
 
@@ -147,6 +151,7 @@ export default function AdminPage() {
         <p className="ij-admin-empty">Loading...</p>
       ) : (
         <>
+          {tab === 'was-here' && <WaitlistTable data={waitlist.filter(w => w.source === 'rco_interest')} />}
           {tab === 'investors' && <InvestorTable data={investors} />}
           {tab === 'waitlist' && <WaitlistTable data={waitlist} />}
         </>
