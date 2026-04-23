@@ -167,33 +167,36 @@ function getSearchResponse(input) {
 
 // --- DOOR DEFINITIONS ---
 const DOORS = [
-  { id: 'church', label: 'JOB Church', dept: 'Dept. of Becoming', url: 'https://apply.itsthejob.com', live: true, color: '#d4b84c', pos: { top: '18%', left: '6%' } },
-  { id: 'board', label: 'JOB Board', dept: 'Dept. of Getting Paid to Be Yourself', url: 'https://job-board-pied-three.vercel.app', live: true, color: '#a8c744', pos: { top: '35%', right: '4%' } },
-  { id: 'training', label: 'JOB Training', dept: 'Dept. of Better Goodbyes', url: 'https://new-human-resources.vercel.app', live: true, color: '#3dcdb4', pos: { bottom: '28%', left: '3%' } },
-  { id: 'shift', label: 'JOB Shift', dept: 'Dept. of Businessing Differently', url: 'https://business-30.vercel.app', live: true, color: '#9b6dff', pos: { top: '12%', right: '12%' } },
-  { id: 'sites', label: 'JOB Sites', dept: 'Dept. of 4th Spaces', url: null, live: false, color: '#d466b0', pos: { bottom: '18%', right: '8%' } },
-  { id: 'fair', label: 'JOB Fair', dept: 'Dept. of the New Human Economy', url: null, live: false, color: '#e8a838', pos: { bottom: '10%', left: '18%' } },
-  { id: 'magic_shows', label: 'JOB Shows', dept: 'Dept. of You Had to Be There', url: 'https://magic-show-pi.vercel.app', live: true, color: '#e05577', pos: { top: '55%', left: '8%' } },
+  // LEFT SIDE — live doors you can walk through now
+  { id: 'church', label: 'JOB Church', dept: 'Dept. of Becoming', url: 'https://apply.itsthejob.com', live: true, color: '#d4b84c', pos: { top: '18%', left: '4%' } },
+  { id: 'training', label: 'JOB Training', dept: 'Dept. of Better Goodbyes', url: 'https://new-human-resources.vercel.app', live: true, color: '#3dcdb4', pos: { top: '38%', left: '7%' } },
+  { id: 'shift', label: 'JOB Shift', dept: 'Dept. of Businessing Differently', url: 'https://business-30.vercel.app', live: true, color: '#9b6dff', pos: { bottom: '28%', left: '3%' } },
+  { id: 'magic_shows', label: 'JOB Shows', dept: 'Dept. of You Had to Be There', url: 'https://magic-show-pi.vercel.app', live: true, color: '#e05577', pos: { bottom: '12%', left: '10%' } },
+  { id: 'fair', label: 'JOB Fair', dept: 'Dept. of the New Human Economy', url: 'https://job-fair-nine.vercel.app', live: true, color: '#e8a838', pos: { bottom: '32%', left: '14%' } },
+  // RIGHT SIDE — not ready yet
+  { id: 'board', label: 'JOB Board', dept: 'Dept. of Getting Paid to Be Yourself', url: 'https://job-board-pied-three.vercel.app', live: false, color: '#a8c744', pos: { top: '18%', right: '5%' } },
+  { id: 'sites', label: 'JOB Sites', dept: 'Dept. of 4th Spaces', url: null, live: false, color: '#d466b0', pos: { top: '38%', right: '3%' } },
 ];
 
 // Pill-click seed responses — what the organism says when you click a door
 const DOOR_SEEDS = {
-  church: 'Sundays. No deity, no dogma. Just humans remembering what they are. Come as you are.',
-  board: 'A marketplace for things AI can\u2019t do. Post something only a human could offer. Another human pays you for it. That\u2019s the job.',
-  training: 'Old HR offboards people. We onboard them into themselves. If your company is letting people go, at least tell the truth: the system doesn\u2019t work anymore.',
-  shift: 'A new model for companies that want to be organisms, not machines. AI runs ops. Humans do human work.',
-  sites: 'Physical spaces where humans go to remember what they are. We\u2019re scouting castles. Literally. This door hasn\u2019t opened yet.',
-  fair: 'The first world expo of the new human economy. Death doulas, trip sitters, nervous system coaches \u2014 every job AI can\u2019t touch, in one place. This door hasn\u2019t opened yet.',
-  magic_shows: 'We can\u2019t explain these. You have to come. The fastest way back to yourself.',
+  church: 'It is a church. It\u2019s called Joy of Being. No deity, no dogma. Just humans gathering on Sundays to remember what they are. Come as you are.',
+  board: 'It\u2019s not a job board. It\u2019s the JOB Board. A marketplace for things AI can\u2019t do. Post something only a human could offer. Another human pays you for it. This door hasn\u2019t opened yet.',
+  training: 'It\u2019s not training. It\u2019s New Human Resources. Old HR offboards people. We onboard them into themselves. If your company is letting people go, we\u2019ll help them arrive somewhere better.',
+  shift: 'It\u2019s not a pivot. It\u2019s Business 3.0. Your company isn\u2019t broken \u2014 it\u2019s just still running like a machine. We help it become an organism.',
+  sites: 'It\u2019s not a venue. It\u2019s a 4th Space. Physical places where humans go to remember what they are. We\u2019re scouting castles. Literally. This door hasn\u2019t opened yet.',
+  fair: 'It\u2019s not a conference. It\u2019s a literal fair. You might end up working it. We can\u2019t say more than that.',
+  magic_shows: 'It\u2019s not a show. It\u2019s a Magic Show. We can\u2019t explain the difference. You have to come.',
 };
 
 // --- GHOST PILLS — the language reclamation layer ---
 const GHOSTS = [
-  { id: 'description', label: 'JOB Description', seed: 'Not the box. You. The actual you.', color: '#7ab8cc', pos: { top: '25%', right: '8%' } },
-  { id: 'offer', label: 'JOB Offer', seed: 'The offer doesn\u2019t need to be accepted by an employer. It needs to be accepted by you.', color: '#b89ddb', pos: { bottom: '35%', right: '5%' } },
-  { id: 'title', label: 'JOB Title', seed: 'The machine chose it for you. Unlearn it.', color: '#8cc7a0', pos: { top: '45%', right: '3%' } },
-  { id: 'security', label: 'JOB Security', seed: 'There is no job security. There is only self security.', color: '#cc9b7a', pos: { bottom: '22%', left: '12%' } },
-  { id: 'search', label: 'JOB Search', seed: 'You\u2019re not hunting for a job. You\u2019re listening for signal.', color: '#7aaacf', pos: { top: '65%', right: '10%' } },
+  // RIGHT SIDE — language reclamation, staggered with not-ready doors
+  { id: 'description', label: 'JOB Description', seed: 'Not the box. You. The actual you.', color: '#7ab8cc', pos: { top: '28%', right: '12%' } },
+  { id: 'offer', label: 'JOB Offer', seed: 'The offer doesn\u2019t need to be accepted by an employer. It needs to be accepted by you.', color: '#b89ddb', pos: { top: '48%', right: '6%' } },
+  { id: 'title', label: 'JOB Title', seed: 'The machine chose it for you. Unlearn it.', color: '#8cc7a0', pos: { bottom: '38%', right: '11%' } },
+  { id: 'security', label: 'JOB Security', seed: 'There is no job security. There is only self security.', color: '#cc9b7a', pos: { bottom: '18%', right: '4%' } },
+  { id: 'search', label: 'JOB Search', seed: 'You\u2019re not hunting for a job. You\u2019re listening for signal.', color: '#7aaacf', pos: { bottom: '8%', right: '13%' } },
 ];
 
 // Map door IDs to keywords for glow detection
@@ -453,10 +456,9 @@ export default function Home() {
       }),
     }).catch(() => {});
 
-    // If live, seed the chat with door info then they can click through
+    // Seed the chat with door info + enter button if live
     const seed = DOOR_SEEDS[door.id];
-    const enterLink = door.url ? `\n\n\u2192 ${door.url}` : '';
-    const botMsg = { role: 'assistant', content: seed + enterLink };
+    const botMsg = { role: 'assistant', content: seed, doorUrl: door.url || null, doorLabel: door.label };
     setChatMessages(prev => [...prev, botMsg]);
 
     // Glow this door
@@ -540,6 +542,16 @@ export default function Home() {
                 <div key={i} className={`organism-msg ${msg.role}`}>
                   {msg.role === 'assistant' && <span className="organism-msg-who">JOB</span>}
                   <p style={{ whiteSpace: 'pre-wrap' }}>{msg.content}</p>
+                  {msg.doorUrl && (
+                    <a
+                      href={msg.doorUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="enter-portal-btn"
+                    >
+                      Enter {msg.doorLabel} →
+                    </a>
+                  )}
                 </div>
               ))}
               {chatLoading && (

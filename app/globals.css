@@ -290,6 +290,30 @@ a { color: inherit; }
   flex-shrink: 0;
 }
 
+/* Enter Portal button — appears in chat after clicking a live door pill */
+.enter-portal-btn {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 0.5rem 1.25rem;
+  background: linear-gradient(135deg, rgba(196,167,255,0.12), rgba(61,205,180,0.12));
+  border: 1px solid rgba(196,167,255,0.35);
+  border-radius: 8px;
+  color: #c4a7ff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: inherit;
+  text-decoration: none;
+  transition: all 0.25s;
+  letter-spacing: 0.03em;
+}
+
+.enter-portal-btn:hover {
+  background: linear-gradient(135deg, rgba(196,167,255,0.22), rgba(61,205,180,0.22));
+  border-color: rgba(196,167,255,0.55);
+  box-shadow: 0 0 16px rgba(196,167,255,0.15);
+  color: #d4c0ff;
+}
+
 /* ============================================
    DOOR PILLS — Scattered across the portal
    ============================================ */
