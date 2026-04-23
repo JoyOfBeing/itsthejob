@@ -1,20 +1,6 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { supabase } from '../lib/supabase';
-
-const APPLY_WORDS = ['Apply now', 'Show up', 'Begin', 'Enter'];
-const REDACTED_WORDS = ['SpiritTech', 'The Portal', 'Mycelium', '????????'];
-
-// --- QUESTION ANSWERS (fixed 3) ---
-const QUESTION_ANSWERS = [
-  'Work never taught us how to be human. At best, it fragmented us. At worst, it punished us for expressing who we really are.',
-  'It prioritized our brains over our bodies. Our hands over our hearts. And, somewhere along the way, we forgot to care about all those parts ourselves. Because who was going to pay for it?',
-  'Now, we\u2019re all paying for it.',
-  'And now that AI is here, millions of people will be without jobs. And the ones that remain will be paid to do the things only humans can do.',
-  'It\u2019s easy to imagine the worst case scenario here. But we prefer the best case one:',
-  'That you step into your job. The one that\u2019s always been yours.',
-];
 
 // --- SEARCH INTELLIGENCE ---
 // Exact phrases matched first, then category keywords, then fallback
@@ -34,7 +20,6 @@ const EXACT_MATCHES = {
   'snl': 'Not that one. Ours is better. \u2192 The Church',
 };
 
-// Church / Department of Becoming — things that belong there
 const CHURCH_KEYWORDS = [
   'elder', 'spiritual', 'somatic', 'breathwork', 'meditation', 'consciousness',
   'ceremony', 'ritual', 'grief', 'healing', 'threshold', 'becoming', 'initiation',
@@ -44,7 +29,6 @@ const CHURCH_KEYWORDS = [
   'braid', 'doctrine', 'congregation', 'fellowship',
 ];
 
-// JOB Board — inherently human services people could offer
 const BOARD_KEYWORDS = [
   'therapist', 'therapy', 'coach', 'coaching', 'counsel', 'listen',
   'sing', 'music', 'play', 'dance', 'perform', 'act', 'art',
@@ -62,7 +46,6 @@ const BOARD_KEYWORDS = [
   'creative', 'maker', 'artisan', 'designer',
 ];
 
-// B3.0 / consulting / org transformation
 const B3_KEYWORDS = [
   'consultant', 'consulting', 'facilitator', 'implementer', 'organiz',
   'transform', 'leadership', 'culture', 'team', 'company', 'startup',
@@ -72,7 +55,6 @@ const B3_KEYWORDS = [
   'purpose-driven', 'conscious', 'stakeholder',
 ];
 
-// Machine jobs — things AI does or will do
 const MACHINE_KEYWORDS = [
   'data entry', 'spreadsheet', 'excel', 'accounting', 'bookkeep',
   'filing', 'admin', 'scheduling', 'logistics', 'supply chain',
@@ -84,7 +66,6 @@ const MACHINE_KEYWORDS = [
   'paralegal', 'document review', 'transcription', 'translation',
 ];
 
-// Simple keyword matches
 const KEYWORD_MATCHES = {
   'manager': 'We don\u2019t have those here. We have elders.',
   'ceo': 'Everyone here is one.',
@@ -141,10 +122,10 @@ const BOARD_RESPONSES = [
 ];
 
 const B3_RESPONSES = [
-  'Now we\u2019re talking. \u2192 Business 3.0',
-  'That door is opening soon. \u2192 Business 3.0',
-  'The organism needs people like you. \u2192 Business 3.0',
-  'You\u2019re thinking at the right scale. \u2192 Business 3.0',
+  'Now we\u2019re talking. \u2192 JOB Shift',
+  'That door is opening soon. \u2192 JOB Shift',
+  'The organism needs people like you. \u2192 JOB Shift',
+  'You\u2019re thinking at the right scale. \u2192 JOB Shift',
 ];
 
 const MACHINE_RESPONSES = [
@@ -171,92 +152,88 @@ function pickRandom(arr) {
 
 function getSearchResponse(input) {
   const lower = input.toLowerCase();
-
-  // 1. Check exact phrase matches first
   for (const [phrase, response] of Object.entries(EXACT_MATCHES)) {
     if (lower.includes(phrase)) return response;
   }
-
-  // 2. Check church keywords
   if (CHURCH_KEYWORDS.some(k => lower.includes(k))) return pickRandom(CHURCH_RESPONSES);
-
-  // 3. Check JOB Board keywords
   if (BOARD_KEYWORDS.some(k => lower.includes(k))) return pickRandom(BOARD_RESPONSES);
-
-  // 4. Check B3.0 keywords
   if (B3_KEYWORDS.some(k => lower.includes(k))) return pickRandom(B3_RESPONSES);
-
-  // 5. Check machine keywords
   if (MACHINE_KEYWORDS.some(k => lower.includes(k))) return pickRandom(MACHINE_RESPONSES);
-
-  // 6. Check simple keyword matches
   for (const [keyword, response] of Object.entries(KEYWORD_MATCHES)) {
     if (lower.includes(keyword)) return response;
   }
-
-  // 7. Fallback
   return pickRandom(DEFAULT_RESPONSES);
 }
 
+// --- DOOR DEFINITIONS ---
+const DOORS = [
+  { id: 'church', label: 'The Church', dept: 'Dept. of Becoming', url: 'https://apply.itsthejob.com', live: true },
+  { id: 'board', label: 'The Board', dept: 'Dept. of Getting Paid to Be Yourself', url: 'https://job-board-pied-three.vercel.app', live: true },
+  { id: 'training', label: 'Training', dept: 'Dept. of Better Goodbyes', url: 'https://new-human-resources.vercel.app', live: true },
+  { id: 'shift', label: 'The Shift', dept: 'Dept. of Businessing Differently', url: 'https://business-30.vercel.app', live: true },
+  { id: 'sites', label: 'Sites', dept: 'Dept. of 4th Spaces', url: null, live: false },
+  { id: 'fair', label: 'The Fair', dept: 'Dept. of the New Human Economy', url: null, live: false },
+  { id: 'magic_shows', label: 'Magic Shows', dept: 'Dept. of You Had to Be There', url: 'https://magic-show-pi.vercel.app', live: true },
+];
+
+// Pill-click seed responses — what the organism says when you click a door
+const DOOR_SEEDS = {
+  church: 'Sundays. No deity, no dogma. Just humans remembering what they are. Come as you are.',
+  board: 'A marketplace for things AI can\u2019t do. Post something only a human could offer. Another human pays you for it. That\u2019s the job.',
+  training: 'Old HR offboards people. We onboard them into themselves. If your company is letting people go, at least tell the truth: the system doesn\u2019t work anymore.',
+  shift: 'A new model for companies that want to be organisms, not machines. AI runs ops. Humans do human work.',
+  sites: 'Physical spaces where humans go to remember what they are. We\u2019re scouting castles. Literally. This door hasn\u2019t opened yet.',
+  fair: 'The first world expo of the new human economy. Death doulas, trip sitters, nervous system coaches \u2014 every job AI can\u2019t touch, in one place. This door hasn\u2019t opened yet.',
+  magic_shows: 'We can\u2019t explain these. You have to come. The fastest way back to yourself.',
+};
+
+// Map door IDs to keywords for glow detection
+const DOOR_GLOW_KEYWORDS = {
+  church: ['church', 'becoming', 'sunday', 'elder'],
+  board: ['board', 'marketplace', 'post', 'listing'],
+  training: ['training', 'nhr', 'human resources', 'outplacement', 'severance'],
+  shift: ['shift', 'business 3.0', 'b3.0', 'consulting', 'organism'],
+  sites: ['sites', 'magicshowland', '4th space', 'castle', 'location'],
+  fair: ['fair', 'expo', 'human economy'],
+  magic_shows: ['magic show', 'magic shows', 'golden ticket'],
+};
+
+function detectGlowingDoors(text) {
+  const lower = text.toLowerCase();
+  const glowing = [];
+  for (const [doorId, keywords] of Object.entries(DOOR_GLOW_KEYWORDS)) {
+    if (keywords.some(k => lower.includes(k))) glowing.push(doorId);
+  }
+  return glowing;
+}
+
 export default function Home() {
-  const [applied, setApplied] = useState(false);
-  const [applyText, setApplyText] = useState(APPLY_WORDS[0]);
-  const [redactedWord, setRedactedWord] = useState('[REDACTED]');
-  const [aiHover, setAiHover] = useState(false);
-  const [redactedLinkText, setRedactedLinkText] = useState('Stay close');
-  const [jobBoardText, setJobBoardText] = useState('Browse listings');
+  // Search bar
   const [searchValue, setSearchValue] = useState('');
-  const [searchResponse, setSearchResponse] = useState('');
   const [searchLocked, setSearchLocked] = useState(false);
-  const [questionClicks, setQuestionClicks] = useState(0);
-  const questionAnswers = QUESTION_ANSWERS;
-  const [heroRevealed, setHeroRevealed] = useState(false);
-  const [closeRevealed, setCloseRevealed] = useState(false);
-  const [waitlistEmail, setWaitlistEmail] = useState('');
-  const [waitlistSubmitted, setWaitlistSubmitted] = useState(false);
-  const [mslHover, setMslHover] = useState(false);
-  const [jobBoardHover, setJobBoardHover] = useState(false);
-  const intervalRef = useRef(null);
-  const doorsRef = useRef(null);
-  const investRef = useRef(null);
+  const searchTimeoutRef = useRef(null);
 
   // Organism chat
   const [chatMessages, setChatMessages] = useState([]);
   const [chatInput, setChatInput] = useState('');
   const [chatLoading, setChatLoading] = useState(false);
+  const [whisperVisible, setWhisperVisible] = useState(false);
   const chatMsgsRef = useRef(null);
+  const sessionIdRef = useRef(null);
 
-  async function sendOrgMessage(e) {
-    e.preventDefault();
-    if (!chatInput.trim() || chatLoading || chatMessages.length >= 20) return;
-    const userMsg = { role: 'user', content: chatInput.trim() };
-    const newMessages = [...chatMessages, userMsg];
-    setChatMessages(newMessages);
-    setChatInput('');
-    setChatLoading(true);
-    try {
-      const chatUrl = process.env.NEXT_PUBLIC_PULSE_URL || 'http://localhost:3001';
-      const res = await fetch(`${chatUrl}/api/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: newMessages, vibe: 'weird' }),
-      });
-      const data = await res.json();
-      setChatMessages([...newMessages, { role: 'assistant', content: data.error || data.answer }]);
-    } catch {
-      setChatMessages([...newMessages, { role: 'assistant', content: 'The organism is resting. Try again in a moment.' }]);
-    }
-    setChatLoading(false);
-  }
+  // Door glow state
+  const [glowingDoors, setGlowingDoors] = useState([]);
+  const glowTimeoutRef = useRef(null);
 
-  useEffect(() => {
-    if (chatMsgsRef.current) chatMsgsRef.current.scrollTop = chatMsgsRef.current.scrollHeight;
-  }, [chatMessages]);
-  const searchTimeoutRef = useRef(null);
-
-  // --- RETURN VISITOR MEMORY (#10) ---
+  // Return visitor memory
   const [visitCount, setVisitCount] = useState(0);
 
+  // Generate session ID on mount
+  useEffect(() => {
+    sessionIdRef.current = 'sess_' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+  }, []);
+
+  // Return visitor memory
   useEffect(() => {
     try {
       const count = parseInt(localStorage.getItem('job-visits') || '0', 10) + 1;
@@ -265,7 +242,13 @@ export default function Home() {
     } catch (e) { /* private browsing */ }
   }, []);
 
-  // --- TAB TITLE CYCLING (#8) ---
+  // Organism's first whisper — delayed entrance
+  useEffect(() => {
+    const timer = setTimeout(() => setWhisperVisible(true), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Tab title cycling
   useEffect(() => {
     const titles = [
       'J.O.B. \u2014 The New Human Resources',
@@ -283,7 +266,7 @@ export default function Home() {
     return () => clearInterval(cycle);
   }, []);
 
-  // --- SPARKLE CURSOR TRAIL ---
+  // Sparkle cursor trail
   useEffect(() => {
     const colors = ['#d4b84c', '#a8c744', '#3dcdb4', '#9b6dff', '#d466b0'];
     let cursorX = 0, cursorY = 0;
@@ -292,7 +275,6 @@ export default function Home() {
     let moveTimeout = null;
     let animFrame = null;
 
-    // Inject keyframes once
     if (!document.getElementById('sparkle-keyframes')) {
       const style = document.createElement('style');
       style.id = 'sparkle-keyframes';
@@ -334,10 +316,8 @@ export default function Home() {
       setTimeout(() => el.remove(), duration * 1000);
     }
 
-    // Continuous render loop — spawns sparkles every frame while moving
     function sparkleLoop() {
       if (!isMoving) return;
-      // Interpolate from previous to current
       if (prevX !== null) {
         const dx = cursorX - prevX;
         const dy = cursorY - prevY;
@@ -352,7 +332,6 @@ export default function Home() {
           }
         }
       }
-      // Spawn at current position
       spawnSparkle(cursorX + (Math.random() - 0.5) * 14, cursorY + (Math.random() - 0.5) * 14);
       prevX = cursorX;
       prevY = cursorY;
@@ -368,7 +347,6 @@ export default function Home() {
         prevY = cursorY;
         sparkleLoop();
       }
-      // Reset the stop timer
       clearTimeout(moveTimeout);
       moveTimeout = setTimeout(() => {
         isMoving = false;
@@ -380,9 +358,7 @@ export default function Home() {
 
     function handleTouch(e) {
       const touch = e.touches[0];
-      if (touch) {
-        handleMove({ clientX: touch.clientX, clientY: touch.clientY });
-      }
+      if (touch) handleMove({ clientX: touch.clientX, clientY: touch.clientY });
     }
 
     document.addEventListener('mousemove', handleMove, { passive: true });
@@ -393,65 +369,93 @@ export default function Home() {
     };
   }, []);
 
-  // Cycle the apply button text
+  // Auto-scroll chat
   useEffect(() => {
-    if (applied) return;
-    let i = 0;
-    intervalRef.current = setInterval(() => {
-      i = (i + 1) % APPLY_WORDS.length;
-      setApplyText(APPLY_WORDS[i]);
-    }, 3000);
-    return () => clearInterval(intervalRef.current);
-  }, [applied]);
+    if (chatMsgsRef.current) chatMsgsRef.current.scrollTop = chatMsgsRef.current.scrollHeight;
+  }, [chatMessages]);
 
-  // Flicker the redacted word occasionally
-  useEffect(() => {
-    const flicker = setInterval(() => {
-      const word = REDACTED_WORDS[Math.floor(Math.random() * REDACTED_WORDS.length)];
-      setRedactedWord(word);
-      setTimeout(() => setRedactedWord('[REDACTED]'), 150);
-    }, 5000);
-    return () => clearInterval(flicker);
-  }, []);
-
-  function handleApply() {
-    setApplied(true);
-    clearInterval(intervalRef.current);
-  }
+  // --- HANDLERS ---
 
   function handleSearch(e) {
     if (e.key !== 'Enter' || !searchValue.trim()) return;
     const response = getSearchResponse(searchValue.trim());
-
     setSearchLocked(true);
     setSearchValue(response);
     clearTimeout(searchTimeoutRef.current);
     searchTimeoutRef.current = setTimeout(() => {
       setSearchValue('');
-      setSearchResponse('');
       setSearchLocked(false);
     }, 2500);
   }
 
-  function handleRedactedClick(e) {
+  async function sendOrgMessage(e) {
     e.preventDefault();
-    setRedactedLinkText('This door hasn\u2019t appeared yet.');
-    setTimeout(() => setRedactedLinkText('But you found where it will be.'), 2000);
-    setTimeout(() => setRedactedLinkText('Stay close'), 4500);
+    if (!chatInput.trim() || chatLoading || chatMessages.length >= 20) return;
+    const userMsg = { role: 'user', content: chatInput.trim() };
+    const newMessages = [...chatMessages, userMsg];
+    setChatMessages(newMessages);
+    setChatInput('');
+    setChatLoading(true);
+    try {
+      const chatUrl = process.env.NEXT_PUBLIC_PULSE_URL || 'http://localhost:3001';
+      const res = await fetch(`${chatUrl}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: newMessages,
+          vibe: 'weird',
+          session_id: sessionIdRef.current,
+          visitor_id: visitCount,
+          source: 'portal',
+        }),
+      });
+      const data = await res.json();
+      const answer = data.error || data.answer;
+      setChatMessages([...newMessages, { role: 'assistant', content: answer }]);
+
+      // Trigger door glow based on response
+      const glowing = data.doors || detectGlowingDoors(answer);
+      if (glowing.length > 0) {
+        setGlowingDoors(glowing);
+        clearTimeout(glowTimeoutRef.current);
+        glowTimeoutRef.current = setTimeout(() => setGlowingDoors([]), 3000);
+      }
+    } catch {
+      setChatMessages([...newMessages, { role: 'assistant', content: 'The organism is resting. Try again in a moment.' }]);
+    }
+    setChatLoading(false);
   }
 
-  function handleJobBoardClick(e) {
-    e.preventDefault();
-    setJobBoardText('Still hiring. Always hiring.');
-    setTimeout(() => {
-      setJobBoardText('Browse listings');
-    }, 2000);
+  function handlePillClick(door) {
+    // Log the click
+    const chatUrl = process.env.NEXT_PUBLIC_PULSE_URL || 'http://localhost:3001';
+    fetch(`${chatUrl}/api/log-click`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        session_id: sessionIdRef.current,
+        door: door.id,
+        source: 'portal',
+      }),
+    }).catch(() => {});
+
+    // If live, seed the chat with door info then they can click through
+    const seed = DOOR_SEEDS[door.id];
+    const enterLink = door.url ? `\n\n\u2192 ${door.url}` : '';
+    const botMsg = { role: 'assistant', content: seed + enterLink };
+    setChatMessages(prev => [...prev, botMsg]);
+
+    // Glow this door
+    setGlowingDoors([door.id]);
+    clearTimeout(glowTimeoutRef.current);
+    glowTimeoutRef.current = setTimeout(() => setGlowingDoors([]), 3000);
   }
 
-  function handleFindDoor(e) {
-    e.preventDefault();
-    doorsRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }
+  const whisperText = visitCount >= 3
+    ? 'You keep coming back. The organism notices.'
+    : visitCount === 2
+    ? 'You came back. Good.'
+    : 'What happens when the only job left is to be human?';
 
   return (
     <>
@@ -479,48 +483,49 @@ export default function Home() {
         ============================================
       */}
 
-      {/* ===== NAV ===== */}
-      <nav className="nav">
-        <div className="nav-inner">
-          <span className="nav-logo">J.O.B.</span>
-          <div className="nav-search">
-            <input
-              type="text"
-              placeholder="Search jobs..."
-              value={searchValue}
-              onChange={e => !searchLocked && setSearchValue(e.target.value)}
-              onKeyDown={handleSearch}
-              className={`nav-search-input ${searchLocked ? 'nav-search-response' : ''}`}
-              readOnly={searchLocked}
-            />
+      <div className="portal">
+        {/* ===== NAV ===== */}
+        <nav className="nav">
+          <div className="nav-inner">
+            <span className="nav-logo">J.O.B.</span>
+            <div className="nav-search">
+              <input
+                type="text"
+                placeholder="Search jobs..."
+                value={searchValue}
+                onChange={e => !searchLocked && setSearchValue(e.target.value)}
+                onKeyDown={handleSearch}
+                className={`nav-search-input ${searchLocked ? 'nav-search-response' : ''}`}
+                readOnly={searchLocked}
+              />
+            </div>
+            <a
+              href="https://job-deck-indol.vercel.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nav-link"
+            >
+              About
+            </a>
           </div>
-          <a
-            href="https://job-deck-indol.vercel.app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="nav-investors"
-          >
-            About
-          </a>
-        </div>
-      </nav>
+        </nav>
 
-      {/* ===== HERO ===== */}
-      <section className="hero">
-        <h1 className="hero-title">Being human<br /><span className="hero-gradient">is the job now.</span><br /><span className="hero-sub">The rest is being automated.</span></h1>
-        <img src="/badge.png" alt="J.O.B. Employee Badge" className="hero-badge" />
-        {/* ===== ORGANISM CHAT (above the fold) ===== */}
-        <div className="organism-chat-hero">
+        {/* ===== ORGANISM CHAT ===== */}
+        <div className="chat-zone">
           <div className="organism-chat-box">
             <div className="organism-chat-glow" />
-            {chatMessages.length === 0 && (
-              <p className="organism-chat-intro">Left this here bc you&apos;re definitely going to have questions.</p>
-            )}
             <div className="organism-chat-messages" ref={chatMsgsRef}>
+              {/* The organism's first whisper */}
+              {whisperVisible && chatMessages.length === 0 && (
+                <div className="organism-msg assistant organism-whisper">
+                  <span className="organism-msg-who">The organism</span>
+                  <p>{whisperText}</p>
+                </div>
+              )}
               {chatMessages.map((msg, i) => (
                 <div key={i} className={`organism-msg ${msg.role}`}>
                   {msg.role === 'assistant' && <span className="organism-msg-who">The organism</span>}
-                  <p>{msg.content}</p>
+                  <p style={{ whiteSpace: 'pre-wrap' }}>{msg.content}</p>
                 </div>
               ))}
               {chatLoading && (
@@ -549,288 +554,42 @@ export default function Home() {
             )}
           </div>
         </div>
-      </section>
 
-      {/* ===== THE PORTAL — The threshold ===== */}
-      <section className="portal">
-        <img src="/job-logo.png" alt="J.O.B." />
-      </section>
-
-      {/* ===== THE DOORS ===== */}
-      <section className="openings" ref={doorsRef}>
-        <div className="openings-inner">
-          <div className="openings-header">J.O.B. stands for the Joy of Being.<br />Pick the portal you want to play in.</div>
-
-          <div className="door">
-            <div className="door-dept">Department of Becoming</div>
-            <h2 className="door-title">The Church</h2>
-            <p className="door-desc">
-              Being is the new doing. Sunday Night Live gatherings. All questions, no answers.
-              Unorganized religion where there is no deity or dogma, just the rediscovery of
-              your personal sovereignty. Integrating the fragmentation of work and soul.
-            </p>
-            <a href="https://apply.itsthejob.com" target="_blank" rel="noopener noreferrer" className="door-link">Become a member</a>
-            <br />
-            <a href="https://www.crowdcast.io/c/i2lm9f5y5vg1" target="_blank" rel="noopener noreferrer" className="door-link" style={{ marginTop: '0.75rem', display: 'inline-block' }}>Join Sunday Night Live</a>
-          </div>
-
-          <div className="door">
-            <div className="door-dept">Department of Businessing Differently</div>
-            <h2 className="door-title">Business 3.0</h2>
-            <p className="door-desc">
-              A new model for companies that want to be organisms, not machines.
-              AI runs ops. Humans do human work.
-              The companies that survive the next decade won&apos;t look like companies at all.
-            </p>
-            <a href="https://business-30.vercel.app" target="_blank" rel="noopener noreferrer" className="door-link">Evolve your company</a>
-          </div>
-
-          <div className="door">
-            <div className="door-dept">Department of Getting Paid to Be Yourself</div>
-            <h2 className="door-title">The J.O.B. Board</h2>
-            <p className="door-desc">
-              A marketplace for things AI can&apos;t do. Post a very unique human offer.
-              Another human pays you for it. &ldquo;I&apos;ll hold your hand while you have
-              that hard conversation.&rdquo; &ldquo;I&apos;ll draw you while you talk about
-              your day.&rdquo; That&apos;s it. That&apos;s the job.
-            </p>
-            <a
-              href="#"
-              onClick={handleJobBoardClick}
-              onMouseEnter={() => setJobBoardHover(true)}
-              onMouseLeave={() => setJobBoardHover(false)}
-              className="door-link"
-            >{jobBoardHover ? 'Patience. The machines would\u2019ve finished by now.' : 'WIP'}</a>
-          </div>
-
-          <div className="door">
-            <div className="door-dept">Department of You Had to Be There</div>
-            <h2 className="door-title">Magic Shows</h2>
-            <p className="door-desc">
-              We can&apos;t explain these. You have to come.
-            </p>
-            <a href="https://magic-show-pi.vercel.app" target="_blank" rel="noopener noreferrer" className="door-link">Enter the Magic Show &rarr;</a>
-          </div>
-
-          <div className="door">
-            <div className="door-dept">Department of 4th Spaces</div>
-            <h2 className="door-title">MagicShowLand</h2>
-            <p className="door-desc">
-              If Meow Wolf, Indeed, and AA had a baby.
-              Physical spaces where humans go to remember what they are.
-              Immersive. Transformational. Weird on purpose. You&apos;ll leave different
-              than you came in.
-            </p>
-            <a
-              href="#"
-              onClick={(e) => { e.preventDefault(); }}
-              onMouseEnter={() => setMslHover(true)}
-              onMouseLeave={() => setMslHover(false)}
-              className="door-link"
-            >{mslHover ? 'We\u2019re scouting castles. Literally.' : 'Locations coming soon'}</a>
-          </div>
-
-          <div className="door">
-            <div className="door-dept">Department of Better Goodbyes</div>
-            <h2 className="door-title">New Human Resources</h2>
-            <p className="door-desc">
-              Old HR doesn&apos;t help people find another job. It offboards them.
-            </p>
-            <p className="door-desc">
-              A severance check. A templated goodbye. Maybe a LinkedIn Premium code. Then you send them right back into the same loop that just rejected them.
-            </p>
-            <p className="door-desc">
-              If you&apos;re going to let people go, at least tell the truth: the system doesn&apos;t work anymore. Then offer something real—not a softer landing, but a path out of the system entirely.
-            </p>
-            <a href="https://new-human-resources.vercel.app" target="_blank" rel="noopener noreferrer" className="door-link">Apply to bring this to your team &rarr;</a>
-          </div>
-
-          <div className="door" ref={investRef}>
-            <div className="door-dept">Department of What Comes Next</div>
-            <h2 className="door-title">The Deck</h2>
-            <p className="door-desc">
-              This is where we lay it all out &mdash; what we&apos;re building, why it matters, and where it&apos;s going.
-              Being human is the job now. We&apos;re building the infrastructure to make it possible.
-            </p>
-            <a href="https://job-deck-indol.vercel.app" target="_blank" rel="noopener noreferrer" className="magic-btn" style={{ display: 'inline-block', textAlign: 'center', textDecoration: 'none' }}>Read the Pitch Deck</a>
-          </div>
-
-          <div className="door door-redacted">
-            <div className="door-dept">New departments opening soon</div>
-            <h2 className="door-title">{redactedWord}</h2>
-            <p className="door-desc">
-              The organism is growing. More doors are appearing.
-            </p>
-            <a href="#" onClick={handleRedactedClick} className="door-link">{redactedLinkText}</a>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== THE JOB LISTING ===== */}
-      <section className="listing">
-        <div className="listing-inner">
-        <div className="listing-header">
-          <div className="listing-company">J.O.B. Openings</div>
-          <h1 className="listing-title">
-            {visitCount >= 3 ? 'You keep coming back.' : visitCount === 2 ? 'Welcome back.' : 'Position: Human'}
-          </h1>
-          {visitCount >= 3 ? (
-            <p className="listing-return">That means something. The position is still open. It always will be.</p>
-          ) : visitCount === 2 ? (
-            <p className="listing-return">The position is still open. It always will be.</p>
-          ) : null}
-          <div className="listing-meta">
-            <span>Location: Everywhere</span>
-            <span>Reports to: Yourself</span>
-            <span>Salary: TBD by you</span>
+        {/* ===== DOOR PILLS ===== */}
+        <div className="doors-zone">
+          <div className="door-pills">
+            {DOORS.map((door, i) => (
+              <div className="door-pill" key={door.id}>
+                <button
+                  className={`door-pill-btn ${!door.live ? 'coming-soon' : ''} ${glowingDoors.includes(door.id) ? 'glowing' : ''}`}
+                  style={{ '--breathe-delay': `${i * 0.6}s` }}
+                  onClick={() => handlePillClick(door)}
+                >
+                  {door.label}
+                </button>
+                <span className="door-dept-name">{door.dept}</span>
+              </div>
+            ))}
           </div>
         </div>
 
-        <div className="listing-body">
-          <h3>About the role</h3>
-          <p>
-            We&apos;re looking for someone who is alive. You&apos;ll be responsible
-            for figuring out what you&apos;re here for and then doing that, possibly in front
-            of other people, possibly for money.
-          </p>
-
-          <h3>Responsibilities</h3>
-          <ul>
-            <li>Showing up (harder than it sounds)</li>
-            <li>Doing the inner work</li>
-            <li>And then, and only then, doing the external work</li>
-            <li>Unlearning most of what you were taught</li>
-          </ul>
-
-          <h3>Benefits</h3>
-          <ul>
-            <li>Obliterating the separation of work and soul</li>
-            <li>A community of people who want to co-create a new reality</li>
-            <li>A marketplace where you get paid to be yourself</li>
-            <li>The chance to build a company that runs like an organism, not a factory</li>
-            <li>The chance to win a golden ticket to a Magic Show</li>
-          </ul>
-
-          <h3>Qualifications</h3>
-          <ul>
-            <li>Must be a human (AI need not apply)</li>
-            <li>Must be at a threshold between who you were and who you&apos;re becoming</li>
-            <li>Experience in deconstruction (preferred, but also inevitable)</li>
-          </ul>
-
-          <span
-            className="ai-flag"
-            onMouseEnter={() => setAiHover(true)}
-            onMouseLeave={() => setAiHover(false)}
+        {/* ===== FOOTER ===== */}
+        <footer className="portal-footer">
+          <span className="portal-tagline">In service of all humans being.</span>
+          <a
+            href="https://job-deck-indol.vercel.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="portal-deck-link"
           >
-            {aiHover
-              ? 'This role has been flagged by AI as "not a real job." Which, fair. We\'re inspiring, not hiring. Yet...'
-              : 'This role has been flagged by AI as "not a real job." Which, fair. We\'re inspiring, not hiring. Yet...'
-            }
-          </span>
-        </div>
-
-        <div className="listing-cta">
-          {!applied ? (
-            <button className="btn-apply" onClick={handleApply}>
-              {applyText}
-            </button>
-          ) : null}
-          <div className={`hired-msg ${applied ? 'visible' : ''}`}>
-            You&apos;re hired. You always were.
-            <p className="linkedin-prompt">Your new job title is waiting.</p>
-            <a
-              href="https://www.linkedin.com/profile/add?startTask=POSITION&title=Human%20in%20Residence&company=J.O.B.&organizationId=113424351"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-linkedin"
-            >
-              Add to LinkedIn
-            </a>
-            <p className="linkedin-disclaimer">
-              This is not a real job offer. At least not yet anyway.
-              By clicking the button you are simply telling LinkedIn what you actually do all day.
-              J.O.B. is not liable for any existential awakenings that may follow.
-            </p>
-          </div>
-        </div>
-        </div>
-      </section>
-
-      {/* You've scrolled past the doors. You're in the basement now.
-           Not many people get this far. In the code OR on the page.
-           Fun fact: this entire site is one file. Like a single-celled organism.
-           It'll grow. */}
-
-      {/* ===== ABOUT US ===== */}
-      <section className="about">
-        <div className="about-inner">
-          <div className="about-label">About Us</div>
-          <p>
-            We&apos;re a church. We&apos;re a marketplace. We&apos;re a consulting firm.
-            We&apos;re an incubator. We&apos;re a species-level intervention
-            disguised as a job board.
-          </p>
-          <p>
-            People keep asking <strong>&ldquo;but what IS it?&rdquo;</strong> and
-            we&apos;re like, <em>&ldquo;What&apos;s your J.O.B.?&rdquo;</em>
-          </p>
-          <p>
-            Work trained you to be a worker. AI is doing the work now. So the
-            entire system &mdash; the resumes, the interviews, the performance reviews,
-            the &ldquo;professional development&rdquo; &mdash; is optimizing you for a role
-            that no longer exists.
-          </p>
-          <p>
-            We didn&apos;t start a company to fix that. We grew
-            an <strong>organism</strong> to outgrow it.
-          </p>
-        </div>
-      </section>
-
-      {/* ===== THE CLOSE ===== */}
-      <section className="close-section">
-        <div className="close-inner">
-          <p className="close-quote close-quote-bold">
-            &ldquo;You never change things by fighting the existing reality. To change
-            something, build a new model that makes the existing model obsolete.&rdquo;
-          </p>
-          <p className="close-attribution">&mdash; Buckminster Fuller</p>
-          {!closeRevealed && (
-            <a href="#" onClick={(e) => { e.preventDefault(); setCloseRevealed(true); }} className="btn-enter">Build a new model</a>
-          )}
-          {closeRevealed && (
-            <div className="close-reveal">
-              <p className="close-vision">What if J.O.B. became the new human resources?</p>
-              <p className="close-vision">What if J.O.B. became the largest <s>employer</s> deployer on the planet?</p>
-              <p className="close-vision">What if we accidentally on purpose created the new human economy?</p>
-              <a href="#" onClick={handleFindDoor} className="btn-enter" style={{ marginTop: '2rem' }}>Pick your portal</a>
-            </div>
-          )}
-        </div>
-      </section>
+            The Deck →
+          </a>
+        </footer>
+      </div>
 
       {/* Last stop. You've read the entire source code of a species-level upgrade.
            That's either dedication or procrastination. Both are welcome here.
            See you Sunday. */}
-
-      {/* ===== FOOTER ===== */}
-      <footer className="footer">
-        <div className="footer-inner">
-          <div className="footer-brand">J.O.B. &mdash; The Joy of Being</div>
-          <div className="footer-tagline" style={{ fontSize: '0.85rem', letterSpacing: '0.1em', color: '#888', marginTop: '0.25rem' }}>In service of all humans being.</div>
-          <div className="footer-links">
-            <a href="https://apply.itsthejob.com" target="_blank" rel="noopener noreferrer">The Church</a>
-            <a href="#" onClick={handleJobBoardClick}>{jobBoardText === 'Browse listings' ? 'The J.O.B. Board' : jobBoardText}</a>
-            <a href="https://business-30.vercel.app/" target="_blank" rel="noopener noreferrer">Business 3.0</a>
-            <a href="https://magic-show-pi.vercel.app" target="_blank" rel="noopener noreferrer">Magic Shows</a>
-            <a href="https://job-deck-indol.vercel.app" target="_blank" rel="noopener noreferrer">The Deck</a>
-          </div>
-          <p className="footer-fine-print">
-            This page was not written by AI. We asked. It said this was too weird.
-          </p>
-        </div>
-      </footer>
     </>
   );
 }
