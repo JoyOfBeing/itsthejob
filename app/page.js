@@ -208,10 +208,11 @@ function detectGlowingDoors(text) {
 }
 
 export default function Home() {
-  // Search bar
-  const [searchValue, setSearchValue] = useState('');
-  const [searchLocked, setSearchLocked] = useState(false);
-  const searchTimeoutRef = useRef(null);
+  // Name bar
+  const [nameValue, setNameValue] = useState('');
+  const [nameLocked, setNameLocked] = useState(false);
+  const [storedName, setStoredName] = useState('');
+  const nameTimeoutRef = useRef(null);
 
   // Organism chat
   const [chatMessages, setChatMessages] = useState([]);
@@ -239,6 +240,8 @@ export default function Home() {
       const count = parseInt(localStorage.getItem('job-visits') || '0', 10) + 1;
       localStorage.setItem('job-visits', count.toString());
       setVisitCount(count);
+      const savedName = localStorage.getItem('job-name') || '';
+      if (savedName) setStoredName(savedName);
     } catch (e) { /* private browsing */ }
   }, []);
 
@@ -376,16 +379,18 @@ export default function Home() {
 
   // --- HANDLERS ---
 
-  function handleSearch(e) {
-    if (e.key !== 'Enter' || !searchValue.trim()) return;
-    const response = getSearchResponse(searchValue.trim());
-    setSearchLocked(true);
-    setSearchValue(response);
-    clearTimeout(searchTimeoutRef.current);
-    searchTimeoutRef.current = setTimeout(() => {
-      setSearchValue('');
-      setSearchLocked(false);
-    }, 2500);
+  function handleNameSubmit(e) {
+    if (e.key !== 'Enter' || !nameValue.trim()) return;
+    const name = nameValue.trim();
+    try { localStorage.setItem('job-name', name); } catch (e) { /* private browsing */ }
+    setStoredName(name);
+    setNameLocked(true);
+    setNameValue(`You're in luck. You're the perfect fit for being ${name}.`);
+    clearTimeout(nameTimeoutRef.current);
+    nameTimeoutRef.current = setTimeout(() => {
+      setNameValue('');
+      setNameLocked(false);
+    }, 3500);
   }
 
   async function sendOrgMessage(e) {
@@ -451,10 +456,10 @@ export default function Home() {
     glowTimeoutRef.current = setTimeout(() => setGlowingDoors([]), 3000);
   }
 
-  const whisperText = visitCount >= 3
-    ? 'You keep coming back. JOB notices.'
-    : visitCount === 2
-    ? 'You came back. Good.'
+  const whisperText = storedName && visitCount >= 3
+    ? `${storedName} keeps coming back.`
+    : storedName && visitCount === 2
+    ? `${storedName} came back. Good.`
     : 'What happens when the only job left is to be human?';
 
   return (
@@ -491,12 +496,12 @@ export default function Home() {
             <div className="nav-search">
               <input
                 type="text"
-                placeholder="Search jobs..."
-                value={searchValue}
-                onChange={e => !searchLocked && setSearchValue(e.target.value)}
-                onKeyDown={handleSearch}
-                className={`nav-search-input ${searchLocked ? 'nav-search-response' : ''}`}
-                readOnly={searchLocked}
+                placeholder={storedName ? `${storedName} is back.` : "What's your name?"}
+                value={nameValue}
+                onChange={e => !nameLocked && setNameValue(e.target.value)}
+                onKeyDown={handleNameSubmit}
+                className={`nav-search-input ${nameLocked ? 'nav-search-response' : ''}`}
+                readOnly={nameLocked}
               />
             </div>
             <a
