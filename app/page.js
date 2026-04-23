@@ -124,7 +124,7 @@ const BOARD_RESPONSES = [
 const B3_RESPONSES = [
   'Now we\u2019re talking. \u2192 JOB Shift',
   'That door is opening soon. \u2192 JOB Shift',
-  'The organism needs people like you. \u2192 JOB Shift',
+  'JOB needs people like you. \u2192 JOB Shift',
   'You\u2019re thinking at the right scale. \u2192 JOB Shift',
 ];
 
@@ -141,7 +141,7 @@ const DEFAULT_RESPONSES = [
   'The algorithm doesn\u2019t work here.',
   'That\u2019s not a door we\u2019ve opened yet.',
   'Interesting. But no.',
-  'The organism doesn\u2019t recognize this input.',
+  'JOB doesn\u2019t recognize that.',
   'Hmm. Try something only a human could do.',
   'You\u2019re thinking too small. Or too machine.',
 ];
@@ -421,7 +421,7 @@ export default function Home() {
         glowTimeoutRef.current = setTimeout(() => setGlowingDoors([]), 3000);
       }
     } catch {
-      setChatMessages([...newMessages, { role: 'assistant', content: 'The organism is resting. Try again in a moment.' }]);
+      setChatMessages([...newMessages, { role: 'assistant', content: 'JOB is resting. Try again in a moment.' }]);
     }
     setChatLoading(false);
   }
@@ -452,7 +452,7 @@ export default function Home() {
   }
 
   const whisperText = visitCount >= 3
-    ? 'You keep coming back. The organism notices.'
+    ? 'You keep coming back. JOB notices.'
     : visitCount === 2
     ? 'You came back. Good.'
     : 'What happens when the only job left is to be human?';
@@ -468,7 +468,7 @@ export default function Home() {
         Department: Source Code
         Status: Awake
         ============================================
-        The organism has a nervous system.
+        JOB has a nervous system.
         You're looking at it.
         ============================================
         If you're reading this, you're either:
@@ -515,28 +515,28 @@ export default function Home() {
           <div className="organism-chat-box">
             <div className="organism-chat-glow" />
             <div className="organism-chat-messages" ref={chatMsgsRef}>
-              {/* The organism's first whisper */}
+              {/* JOB's first whisper */}
               {whisperVisible && chatMessages.length === 0 && (
                 <div className="organism-msg assistant organism-whisper">
-                  <span className="organism-msg-who">The organism</span>
+                  <span className="organism-msg-who">JOB</span>
                   <p>{whisperText}</p>
                 </div>
               )}
               {chatMessages.map((msg, i) => (
                 <div key={i} className={`organism-msg ${msg.role}`}>
-                  {msg.role === 'assistant' && <span className="organism-msg-who">The organism</span>}
+                  {msg.role === 'assistant' && <span className="organism-msg-who">JOB</span>}
                   <p style={{ whiteSpace: 'pre-wrap' }}>{msg.content}</p>
                 </div>
               ))}
               {chatLoading && (
                 <div className="organism-msg assistant">
-                  <span className="organism-msg-who">The organism</span>
+                  <span className="organism-msg-who">JOB</span>
                   <p style={{ fontStyle: 'italic', opacity: 0.6 }}>breathing...</p>
                 </div>
               )}
             </div>
             {chatMessages.length >= 20 ? (
-              <p className="organism-chat-limit">The organism needs rest. Come back later.</p>
+              <p className="organism-chat-limit">JOB needs rest. Come back later.</p>
             ) : (
               <form onSubmit={sendOrgMessage} className="organism-chat-form">
                 <input
