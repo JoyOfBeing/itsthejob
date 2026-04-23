@@ -187,6 +187,15 @@ const DOOR_SEEDS = {
   magic_shows: 'We can\u2019t explain these. You have to come. The fastest way back to yourself.',
 };
 
+// --- GHOST PILLS — the language reclamation layer ---
+const GHOSTS = [
+  { id: 'description', label: 'JOB Description', seed: 'Not the box. You. The actual you.', color: '#7ab8cc', pos: { top: '25%', right: '8%' } },
+  { id: 'offer', label: 'JOB Offer', seed: 'The offer doesn\u2019t need to be accepted by an employer. It needs to be accepted by you.', color: '#b89ddb', pos: { bottom: '35%', right: '5%' } },
+  { id: 'title', label: 'JOB Title', seed: 'The machine chose it for you. Unlearn it.', color: '#8cc7a0', pos: { top: '45%', right: '3%' } },
+  { id: 'security', label: 'JOB Security', seed: 'There is no job security. There is only self security.', color: '#cc9b7a', pos: { bottom: '22%', left: '12%' } },
+  { id: 'search', label: 'JOB Search', seed: 'You\u2019re not hunting for a job. You\u2019re listening for signal.', color: '#7aaacf', pos: { top: '65%', right: '10%' } },
+];
+
 // Map door IDs to keywords for glow detection
 const DOOR_GLOW_KEYWORDS = {
   church: ['church', 'becoming', 'sunday', 'elder'],
@@ -576,6 +585,26 @@ export default function Home() {
               {door.label}
             </button>
             <span className="door-dept-name" style={{ color: door.color + 'aa' }}>{door.dept}</span>
+          </div>
+        ))}
+
+        {/* ===== GHOST PILLS — the language, not the departments ===== */}
+        {GHOSTS.map((ghost, i) => (
+          <div className="door-pill" key={ghost.id} style={{ ...ghost.pos }}>
+            <button
+              className="ghost-pill-btn"
+              style={{
+                '--breathe-delay': `${(i + 7) * 0.8}s`,
+                '--pill-color': ghost.color,
+                borderColor: ghost.color + '44',
+                color: ghost.color + 'aa',
+              }}
+              onClick={() => {
+                setChatMessages(prev => [...prev, { role: 'assistant', content: ghost.seed }]);
+              }}
+            >
+              {ghost.label}
+            </button>
           </div>
         ))}
 
