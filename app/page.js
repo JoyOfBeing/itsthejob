@@ -581,44 +581,48 @@ export default function Home() {
           </div>
         </div>
 
-        {/* ===== DOOR PILLS — scattered across the page ===== */}
-        {DOORS.map((door, i) => (
-          <div className="door-pill" key={door.id} style={{ ...door.pos }}>
-            <button
-              className={`door-pill-btn ${!door.live ? 'coming-soon' : ''} ${glowingDoors.includes(door.id) ? 'glowing' : ''}`}
-              style={{
-                '--breathe-delay': `${i * 0.6}s`,
-                '--pill-color': door.color,
-                borderColor: door.color + '66',
-                color: door.color,
-              }}
-              onClick={() => handlePillClick(door)}
-            >
-              {door.label}
-            </button>
-            <span className="door-dept-name" style={{ color: door.color + 'aa' }}>{door.dept}</span>
-          </div>
-        ))}
+        {/* ===== DOOR PILLS — scattered on desktop, flow on mobile ===== */}
+        <div className="pills-container">
+          {DOORS.map((door, i) => (
+            <div className="door-pill" key={door.id} style={{ ...door.pos }}>
+              <button
+                className={`door-pill-btn ${!door.live ? 'coming-soon' : ''} ${glowingDoors.includes(door.id) ? 'glowing' : ''}`}
+                style={{
+                  '--breathe-delay': `${i * 0.6}s`,
+                  '--pill-color': door.color,
+                  borderColor: door.color + '66',
+                  color: door.color,
+                }}
+                onClick={() => handlePillClick(door)}
+              >
+                {door.label}
+              </button>
+              <span className="door-dept-name" style={{ color: door.color + 'aa' }}>{door.dept}</span>
+            </div>
+          ))}
+        </div>
 
         {/* ===== GHOST PILLS — the language, not the departments ===== */}
-        {GHOSTS.map((ghost, i) => (
-          <div className="door-pill" key={ghost.id} style={{ ...ghost.pos }}>
-            <button
-              className="ghost-pill-btn"
-              style={{
-                '--breathe-delay': `${(i + 7) * 0.8}s`,
-                '--pill-color': ghost.color,
-                borderColor: ghost.color + '44',
-                color: ghost.color + 'aa',
-              }}
-              onClick={() => {
-                setChatMessages(prev => [...prev, { role: 'assistant', content: ghost.seed }]);
-              }}
-            >
-              {ghost.label}
-            </button>
-          </div>
-        ))}
+        <div className="pills-container ghosts-container">
+          {GHOSTS.map((ghost, i) => (
+            <div className="door-pill" key={ghost.id} style={{ ...ghost.pos }}>
+              <button
+                className="ghost-pill-btn"
+                style={{
+                  '--breathe-delay': `${(i + 7) * 0.8}s`,
+                  '--pill-color': ghost.color,
+                  borderColor: ghost.color + '44',
+                  color: ghost.color + 'aa',
+                }}
+                onClick={() => {
+                  setChatMessages(prev => [...prev, { role: 'assistant', content: ghost.seed }]);
+                }}
+              >
+                {ghost.label}
+              </button>
+            </div>
+          ))}
+        </div>
 
         {/* ===== FOOTER ===== */}
         <footer className="portal-footer">
