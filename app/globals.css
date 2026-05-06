@@ -1,6 +1,6 @@
 /* ============================================
-   itsthejob.com V2 — The Portal
-   One screen. One organism. Many doors.
+   itsthejob.com V3 — The Scroll
+   Dark void + prismatic light bleeding through.
    ============================================ */
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -17,14 +17,15 @@
   --glow-teal: #3dcdb4;
   --glow-purple: #9b6dff;
   --glow-pink: #d466b0;
+  --glow-coral: #e05577;
+  --glow-amber: #e8a838;
   --gold: #c9a84c;
 
   --radius: 8px;
 }
 
-html, body {
-  height: 100%;
-  overflow: hidden;
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -38,111 +39,542 @@ body {
 a { color: inherit; }
 
 /* ============================================
-   PORTAL LAYOUT — Single viewport
+   PRISMATIC BACKGROUND — animated rainbow
+   bleeding through the dark like light
+   through cracks in a void
    ============================================ */
 
-.portal {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  padding: 0;
-  position: relative;
-  overflow: hidden;
+.prism-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(155, 109, 255, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 30%, rgba(61, 205, 180, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 70%, rgba(212, 184, 76, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 30% 90%, rgba(224, 85, 119, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 80%, rgba(168, 199, 68, 0.04) 0%, transparent 50%),
+    var(--dark-bg);
+  animation: prismShift 20s ease-in-out infinite alternate;
+}
+
+@keyframes prismShift {
+  0% {
+    background-position: 0% 0%, 100% 0%, 50% 100%, 0% 100%, 100% 80%;
+  }
+  50% {
+    background-position: 30% 20%, 70% 40%, 40% 60%, 60% 80%, 20% 50%;
+  }
+  100% {
+    background-position: 50% 40%, 20% 60%, 80% 30%, 40% 50%, 70% 20%;
+  }
 }
 
 /* ============================================
-   NAV — Still looks like a job board
+   SCROLL CONTAINER
    ============================================ */
 
-.nav {
-  flex-shrink: 0;
-  border-bottom: 1px solid var(--dark-border);
-  background: rgba(10, 10, 15, 0.92);
-  backdrop-filter: blur(12px);
-  z-index: 100;
+.scroll {
+  position: relative;
+  z-index: 1;
 }
 
-.nav-inner {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 0.6rem 1.5rem;
+/* ============================================
+   BEAT — Section base
+   ============================================ */
+
+.beat {
+  min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  justify-content: center;
+  padding: 4rem 1.5rem;
+  position: relative;
 }
 
-.nav-logo {
-  font-size: 1.1rem;
-  font-weight: 800;
+/* ============================================
+   BEAT 1: THE OPENING
+   ============================================ */
+
+.beat-opening {
+  min-height: 100vh;
+  text-align: center;
+  position: relative;
+}
+
+.beat-opening-content {
+  animation: fadeInUp 1.5s ease forwards;
+}
+
+.wordmark {
+  font-size: clamp(4rem, 12vw, 8rem);
+  font-weight: 900;
   letter-spacing: 0.05em;
-  color: var(--dark-text);
-  flex-shrink: 0;
-}
-
-.nav-search {
-  flex: 1;
-  max-width: 400px;
-  margin: 0 auto;
-}
-
-.nav-search-input {
-  width: 100%;
-  padding: 0.45rem 0.75rem;
-  border: 1px solid var(--dark-border);
-  border-radius: 6px;
-  font-size: 0.9rem;
-  font-family: inherit;
-  background: var(--dark-surface);
-  color: var(--dark-text);
-  transition: border-color 0.2s, color 0.3s;
-  outline: none;
-}
-
-.nav-search-input:focus {
-  border-color: var(--dark-muted);
-}
-
-.nav-search-input::placeholder {
-  color: var(--dark-muted);
-}
-
-.nav-search-response {
-  background: linear-gradient(135deg, var(--glow-gold), var(--glow-chartreuse), var(--glow-teal), var(--glow-purple), var(--glow-pink));
+  background: linear-gradient(
+    135deg,
+    var(--glow-gold),
+    var(--glow-chartreuse),
+    var(--glow-teal),
+    var(--glow-purple),
+    var(--glow-pink),
+    var(--glow-coral),
+    var(--glow-amber),
+    var(--glow-gold)
+  );
+  background-size: 400% 400%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  font-style: italic;
-  font-weight: 500;
-  border-color: var(--glow-teal);
-  cursor: default;
+  animation: rainbowFlow 12s ease infinite;
 }
 
-.nav-link {
-  font-size: 0.85rem;
-  font-weight: 600;
+@keyframes rainbowFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.wordmark-sub {
+  font-size: clamp(0.9rem, 2.5vw, 1.3rem);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
   color: var(--dark-muted);
-  text-decoration: none;
-  flex-shrink: 0;
-  transition: color 0.2s;
+  margin-top: 0.5rem;
+  font-weight: 400;
 }
 
-.nav-link:hover {
+.founding-question {
+  margin-top: 3rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.4em;
+}
+
+.fq-text {
+  font-size: clamp(1.1rem, 3vw, 1.6rem);
+  color: var(--dark-muted);
+  font-weight: 300;
+}
+
+.fq-emphasis {
+  font-size: clamp(1.3rem, 3.5vw, 1.9rem);
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--glow-teal), var(--glow-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.opening-hook {
+  margin-top: 2rem;
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  color: var(--dark-muted);
+  font-weight: 300;
+  max-width: 500px;
+  line-height: 1.6;
+}
+
+.opening-hook-bold {
+  margin-top: 0.75rem;
+  font-weight: 600;
   color: var(--dark-text);
 }
 
-/* ============================================
-   CHAT — The center of everything
-   ============================================ */
-
-.chat-zone {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem 1.5rem;
-  min-height: 0;
+.return-whisper {
+  margin-top: 2rem;
+  font-size: 0.85rem;
+  color: rgba(201, 168, 76, 0.5);
+  font-style: italic;
+  animation: whisperIn 2s ease forwards;
 }
 
+.scroll-hint {
+  position: absolute;
+  bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  animation: scrollHintPulse 2s ease-in-out infinite;
+}
+
+.scroll-hint-text {
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(232, 232, 232, 0.2);
+}
+
+.scroll-hint-arrow {
+  font-size: 1.2rem;
+  color: rgba(232, 232, 232, 0.15);
+}
+
+@keyframes scrollHintPulse {
+  0%, 100% { opacity: 0.4; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(6px); }
+}
+
+/* ============================================
+   BEAT 2: THE SHIFT
+   ============================================ */
+
+.beat-shift {
+  min-height: 80vh;
+  text-align: center;
+  position: relative;
+}
+
+/* Prismatic crack — light bleeds through between beats */
+.beat-shift::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(155, 109, 255, 0.3),
+    rgba(61, 205, 180, 0.4),
+    rgba(212, 184, 76, 0.3),
+    rgba(224, 85, 119, 0.3),
+    transparent
+  );
+}
+
+.shift-content {
+  max-width: 600px;
+}
+
+.shift-line {
+  font-size: clamp(1.4rem, 4vw, 2.2rem);
+  font-weight: 300;
+  color: var(--dark-muted);
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+
+.shift-line-delay-1 {
+  font-weight: 700;
+  color: var(--dark-text);
+  font-size: clamp(1.6rem, 4.5vw, 2.5rem);
+}
+
+.shift-line-delay-2 {
+  font-weight: 300;
+  margin-top: 0.5rem;
+}
+
+.shift-tagline {
+  margin-top: 2.5rem;
+  font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+  color: rgba(232, 232, 232, 0.4);
+  font-weight: 400;
+}
+
+.shift-tagline em {
+  font-style: italic;
+  background: linear-gradient(135deg, var(--glow-teal), var(--glow-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Story text — Chief's voice */
+.story-line {
+  font-size: clamp(1.1rem, 3vw, 1.4rem);
+  color: var(--dark-text);
+  font-weight: 400;
+  line-height: 1.7;
+  margin-bottom: 1.25rem;
+  max-width: 560px;
+}
+
+.story-dim {
+  color: var(--dark-muted);
+  font-weight: 300;
+}
+
+.story-punch {
+  font-size: clamp(1.6rem, 4.5vw, 2.5rem);
+  font-weight: 800;
+  margin-top: 1rem;
+  background: linear-gradient(135deg, var(--glow-teal), var(--glow-purple), var(--glow-pink));
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: rainbowFlow 8s ease infinite;
+}
+
+/* Story beats */
+.beat-story {
+  min-height: 70vh;
+  text-align: center;
+  position: relative;
+}
+
+.beat-story::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 15%;
+  right: 15%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(155, 109, 255, 0.2),
+    rgba(61, 205, 180, 0.3),
+    rgba(212, 184, 76, 0.2),
+    transparent
+  );
+}
+
+.story-block {
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.story-line em {
+  font-style: italic;
+  color: var(--dark-text);
+}
+
+.story-link {
+  color: var(--door-color);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: opacity 0.2s;
+}
+
+.story-link:hover {
+  opacity: 0.8;
+}
+
+/* Story door — the link each beat earns */
+.story-door {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 2rem;
+  padding: 1rem 2rem;
+  border: 1px solid color-mix(in srgb, var(--door-color) 30%, transparent);
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.3s;
+  background: color-mix(in srgb, var(--door-color) 4%, transparent);
+}
+
+.story-door:hover {
+  border-color: color-mix(in srgb, var(--door-color) 55%, transparent);
+  background: color-mix(in srgb, var(--door-color) 10%, transparent);
+  box-shadow: 0 0 30px color-mix(in srgb, var(--door-color) 12%, transparent);
+}
+
+.story-door-dept {
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--door-color) 60%, var(--dark-muted));
+  font-weight: 500;
+}
+
+.story-door-label {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--door-color);
+}
+
+/* Experiment cards — for-profit section */
+.experiment-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  width: 100%;
+}
+
+.experiment-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1.25rem;
+  border: 1px solid color-mix(in srgb, var(--door-color) 25%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--door-color) 3%, transparent);
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.experiment-card:hover {
+  border-color: color-mix(in srgb, var(--door-color) 50%, transparent);
+  background: color-mix(in srgb, var(--door-color) 8%, transparent);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--door-color) 10%, transparent);
+}
+
+.experiment-card-coming {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.experiment-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--door-color);
+}
+
+.experiment-why {
+  font-size: 0.82rem;
+  color: var(--dark-muted);
+  line-height: 1.5;
+}
+
+.beat-forprofit {
+  min-height: auto;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+/* RCO side labels */
+.rco-side-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--dark-muted);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--dark-border);
+  width: 100%;
+  text-align: center;
+}
+
+/* ============================================
+   COMING SOON — locked doors
+   ============================================ */
+
+.beat-coming-soon {
+  min-height: 40vh;
+  position: relative;
+}
+
+.beat-coming-soon::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 15%;
+  right: 15%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(168, 199, 68, 0.2),
+    rgba(212, 102, 176, 0.2),
+    transparent
+  );
+}
+
+.coming-soon-block {
+  text-align: center;
+}
+
+.coming-soon-intro {
+  font-size: clamp(0.85rem, 2vw, 1rem);
+  color: var(--dark-muted);
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
+.coming-soon-grid {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.coming-soon-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 1rem 1.5rem;
+  border: 1px dashed color-mix(in srgb, var(--door-color) 25%, transparent);
+  border-radius: 12px;
+  opacity: 0.5;
+  min-width: 200px;
+}
+
+.coming-soon-dept {
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--door-color) 50%, var(--dark-muted));
+}
+
+.coming-soon-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--door-color);
+}
+
+.coming-soon-desc {
+  font-size: 0.8rem;
+  color: var(--dark-muted);
+  max-width: 220px;
+}
+
+/* ============================================
+   BEAT 4: THE ORGANISM (AI Chat)
+   ============================================ */
+
+.beat-organism {
+  min-height: 90vh;
+  position: relative;
+}
+
+.beat-organism::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(212, 184, 76, 0.3),
+    rgba(155, 109, 255, 0.4),
+    rgba(168, 199, 68, 0.3),
+    transparent
+  );
+}
+
+.organism-intro {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.organism-heading {
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.organism-sub {
+  font-size: clamp(0.85rem, 2vw, 1rem);
+  color: var(--dark-muted);
+}
+
+/* Chat box — preserved from V2 */
 .organism-chat-box {
   position: relative;
   overflow: hidden;
@@ -151,7 +583,7 @@ a { color: inherit; }
   padding: 28px;
   width: 100%;
   max-width: 600px;
-  max-height: 100%;
+  max-height: 450px;
   display: flex;
   flex-direction: column;
 }
@@ -290,168 +722,520 @@ a { color: inherit; }
   flex-shrink: 0;
 }
 
-/* Enter Portal button — appears in chat after clicking a live door pill */
-.enter-portal-btn {
-  display: inline-block;
-  margin-top: 8px;
-  padding: 0.5rem 1.25rem;
-  background: linear-gradient(135deg, rgba(196,167,255,0.12), rgba(61,205,180,0.12));
-  border: 1px solid rgba(196,167,255,0.35);
-  border-radius: 8px;
-  color: #c4a7ff;
-  font-size: 0.85rem;
-  font-weight: 600;
-  font-family: inherit;
-  text-decoration: none;
-  transition: all 0.25s;
-  letter-spacing: 0.03em;
-}
-
-.enter-portal-btn:hover {
-  background: linear-gradient(135deg, rgba(196,167,255,0.22), rgba(61,205,180,0.22));
-  border-color: rgba(196,167,255,0.55);
-  box-shadow: 0 0 16px rgba(196,167,255,0.15);
-  color: #d4c0ff;
-}
-
 /* ============================================
-   DOOR PILLS — Scattered across the portal
+   BEAT 5: THE CLOSE
    ============================================ */
 
-.door-pill {
+.beat-close {
+  min-height: 60vh;
+  position: relative;
+}
+
+.beat-close::before {
+  content: '';
   position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(61, 205, 180, 0.3),
+    rgba(224, 85, 119, 0.3),
+    rgba(232, 168, 56, 0.3),
+    transparent
+  );
+}
+
+.close-content {
+  text-align: center;
+}
+
+.close-question {
+  font-size: clamp(1.3rem, 3.5vw, 2rem);
+  font-weight: 300;
+  color: var(--dark-muted);
+  margin-bottom: 0.75rem;
+}
+
+.close-cta {
+  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+  color: rgba(232, 232, 232, 0.4);
+  margin-bottom: 2rem;
+}
+
+.close-deck-link {
+  display: inline-block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--dark-text);
+  text-decoration: none;
+  padding: 0.6rem 1.5rem;
+  border: 1px solid var(--dark-border);
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+
+.close-deck-link:hover {
+  border-color: var(--glow-teal);
+  color: var(--glow-teal);
+  box-shadow: 0 0 20px rgba(61, 205, 180, 0.1);
+}
+
+/* Ghost pills — language reclamation Easter eggs */
+.ghosts-row {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 3rem;
+  max-width: 600px;
+}
+
+.ghost-pill {
+  position: relative;
+  padding: 0.4rem 1rem;
+  background: transparent;
+  border: 1px dashed rgba(150, 150, 180, 0.2);
+  border-radius: 24px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-family: inherit;
+  color: rgba(232, 232, 232, 0.3);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.ghost-pill:hover {
+  color: rgba(232, 232, 232, 0.6);
+  border-color: rgba(150, 150, 180, 0.4);
+}
+
+.ghost-pill-active {
+  color: rgba(232, 232, 232, 0.7);
+  border-style: solid;
+  border-color: rgba(196, 167, 255, 0.3);
+  background: rgba(196, 167, 255, 0.05);
+}
+
+.ghost-pill-seed {
+  display: block;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 260px;
+  padding: 0.6rem 0.8rem;
+  background: var(--dark-surface);
+  border: 1px solid rgba(196, 167, 255, 0.2);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--dark-muted);
+  line-height: 1.4;
+  text-align: center;
+  animation: whisperIn 0.4s ease forwards;
   z-index: 10;
 }
 
-.door-pill-btn {
-  padding: 0.5rem 1.25rem;
+/* ============================================
+   SHARED ANIMATIONS
+   ============================================ */
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================
+   RCO PAGE
+   ============================================ */
+
+.rco-back {
+  margin-bottom: 2rem;
+}
+
+.rco-back a {
+  font-size: 0.8rem;
+  color: var(--dark-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.rco-back a:hover {
+  color: var(--dark-text);
+}
+
+.rco-wordmark {
+  font-size: clamp(3rem, 10vw, 6rem);
+}
+
+.rco-question {
+  font-size: clamp(1.2rem, 3vw, 1.6rem);
+  margin-top: 1.5rem;
+}
+
+.rco-wide-block {
+  max-width: 720px;
+}
+
+.rco-tiers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+  width: 100%;
+}
+
+.rco-tier {
+  padding: 1.5rem;
+  border: 1px solid color-mix(in srgb, var(--tier-color) 30%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--tier-color) 4%, transparent);
+  text-align: left;
+}
+
+.rco-tier-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--tier-color);
+  margin-bottom: 0.25rem;
+}
+
+.rco-tier-price {
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--tier-color) 60%, var(--dark-muted));
+  margin-bottom: 0.75rem;
+}
+
+.rco-tier-desc {
+  font-size: 0.85rem;
+  color: var(--dark-muted);
+  line-height: 1.6;
+}
+
+/* Door paths to membership */
+.rco-doors-to-membership {
+  margin-top: 1.5rem;
+  width: 100%;
+}
+
+.rco-doors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.rco-door-path {
+  padding: 1rem;
+  border: 1px solid color-mix(in srgb, var(--door-color) 25%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--door-color) 3%, transparent);
+}
+
+.rco-door-path-name {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--door-color);
+  margin-bottom: 0.35rem;
+}
+
+.rco-door-path-how {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--dark-muted);
+  line-height: 1.5;
+}
+
+/* ============================================
+   JOB REPORT INTERACTIVE
+   ============================================ */
+
+.jr-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.jr-left, .jr-right {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.jr-input {
+  width: 100%;
+  padding: 0.8rem 1rem;
   background: var(--dark-surface);
   border: 1px solid var(--dark-border);
-  border-radius: 24px;
+  border-radius: 10px;
   color: var(--dark-text);
+  font-size: 0.9rem;
+  font-family: inherit;
+  line-height: 1.5;
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.15s;
+}
+
+.jr-input:focus {
+  border-color: var(--glow-teal);
+}
+
+.jr-input::placeholder {
+  color: var(--dark-muted);
+  opacity: 0.7;
+}
+
+.jr-submit {
+  margin-top: 0.4rem;
+  padding: 0.65rem 1.2rem;
+  background: linear-gradient(135deg, rgba(61, 205, 180, 0.2), rgba(155, 109, 255, 0.2));
+  color: var(--glow-teal);
+  font-weight: 700;
+  font-size: 0.85rem;
+  font-family: inherit;
+  border: 1px solid rgba(61, 205, 180, 0.3);
+  border-radius: 10px;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: all 0.2s;
+}
+
+.jr-submit:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(61, 205, 180, 0.3), rgba(155, 109, 255, 0.3));
+  border-color: rgba(61, 205, 180, 0.5);
+}
+
+.jr-submit:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.jr-error {
+  font-size: 0.8rem;
+  color: #ef4444;
+  margin-top: 0.4rem;
+}
+
+.jr-receipt {
+  background: var(--dark-surface);
+  border: 1px solid var(--dark-border);
+  border-left: 3px solid var(--glow-teal);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+}
+
+.jr-receipt-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  margin-bottom: 0.6rem;
+}
+
+.jr-chip {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--dark-bg);
+  white-space: nowrap;
+}
+
+.jr-chip-outline {
+  background: transparent !important;
+  border: 1px solid var(--dark-border);
+  color: var(--dark-text) !important;
+}
+
+.jr-points {
+  margin-left: auto;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--dark-text);
+  font-family: monospace;
+}
+
+.jr-explanation {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--dark-muted);
+  margin-bottom: 0.4rem;
+}
+
+.jr-redemption {
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--glow-teal);
+  margin-bottom: 0.4rem;
+}
+
+.jr-open-loop {
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: #f5b544;
+  font-style: italic;
+}
+
+.jr-disclaimer {
+  font-size: 0.68rem;
+  line-height: 1.4;
+  color: var(--dark-muted);
+  font-style: italic;
+  margin-top: 1rem;
+  opacity: 0.7;
+}
+
+.jr-ledger-header {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--glow-teal);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--dark-border);
+}
+
+.jr-ledger {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 380px;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.jr-entry {
+  background: var(--dark-surface);
+  border: 1px solid var(--dark-border);
+  border-left: 3px solid var(--glow-teal);
+  border-radius: 10px;
+  padding: 0.65rem 0.8rem;
+}
+
+.jr-entry-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.3rem;
+}
+
+.jr-entry-top strong {
+  color: var(--dark-text);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.jr-entry-meta {
+  font-size: 0.65rem;
+  color: var(--dark-muted);
+  font-family: monospace;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.jr-entry-desc {
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--dark-muted);
+}
+
+.jr-entry-redemption {
+  font-size: 0.72rem;
+  color: var(--glow-teal);
+  margin-top: 0.25rem;
+  opacity: 0.8;
+}
+
+@media (max-width: 600px) {
+  .jr-grid {
+    grid-template-columns: 1fr;
+  }
+  .jr-ledger {
+    max-height: 250px;
+  }
+}
+
+/* Waitlist form */
+.rco-waitlist-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  max-width: 400px;
+  width: 100%;
+}
+
+.rco-waitlist-input {
+  flex: 1;
+  padding: 0.7rem 1rem;
+  background: var(--dark-surface);
+  border: 1px solid var(--dark-border);
+  border-radius: 8px;
+  color: var(--dark-text);
+  font-family: inherit;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.rco-waitlist-input:focus {
+  border-color: var(--glow-teal);
+}
+
+.rco-waitlist-input::placeholder {
+  color: var(--dark-muted);
+}
+
+.rco-waitlist-btn {
+  padding: 0.7rem 1.25rem;
+  background: linear-gradient(135deg, rgba(61, 205, 180, 0.15), rgba(155, 109, 255, 0.15));
+  border: 1px solid rgba(61, 205, 180, 0.3);
+  border-radius: 8px;
+  color: var(--glow-teal);
+  font-family: inherit;
   font-size: 0.85rem;
   font-weight: 600;
-  font-family: inherit;
   cursor: pointer;
-  transition: all 0.3s;
-  text-decoration: none;
-  display: inline-block;
-  animation: doorBreathe 4s ease-in-out infinite;
-  animation-delay: var(--breathe-delay, 0s);
-}
-
-.door-pill-btn:hover {
-  box-shadow: 0 0 20px color-mix(in srgb, var(--pill-color) 30%, transparent);
-  filter: brightness(1.2);
-}
-
-@keyframes doorBreathe {
-  0%, 100% { opacity: 0.7; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.03); }
-}
-
-/* Door glow — when organism mentions this door */
-.door-pill-btn.glowing {
-  animation: doorGlowPulse 0.6s ease-in-out 4;
-}
-
-@keyframes doorGlowPulse {
-  0%, 100% { box-shadow: 0 0 8px color-mix(in srgb, var(--pill-color) 25%, transparent); }
-  50% { box-shadow: 0 0 28px color-mix(in srgb, var(--pill-color) 50%, transparent), 0 0 56px color-mix(in srgb, var(--pill-color) 20%, transparent); }
-}
-
-/* Department name reveal on hover */
-.door-dept-name {
-  font-size: 0.6rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--dark-muted);
-  opacity: 0;
-  transform: translateY(-4px);
-  transition: opacity 0.3s, transform 0.3s;
-  position: absolute;
-  bottom: -18px;
+  transition: all 0.2s;
   white-space: nowrap;
-  pointer-events: none;
 }
 
-.door-pill:hover .door-dept-name {
-  opacity: 1;
-  transform: translateY(0);
+.rco-waitlist-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(61, 205, 180, 0.25), rgba(155, 109, 255, 0.25));
+  border-color: rgba(61, 205, 180, 0.5);
 }
 
-/* Pills container — invisible on desktop, flex-wrap on mobile */
-.pills-container {
-  display: contents;
-}
-
-/* Coming soon pill style */
-.door-pill-btn.coming-soon {
+.rco-waitlist-btn:disabled {
   opacity: 0.5;
   cursor: default;
 }
 
-.door-pill-btn.coming-soon:hover {
-  opacity: 0.7;
-}
-
-/* Ghost pills — language reclamation, outline only */
-.ghost-pill-btn {
-  padding: 0.45rem 1.1rem;
-  background: transparent;
-  border: 1px dashed var(--dark-border);
-  border-radius: 24px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  font-family: inherit;
-  cursor: pointer;
-  transition: all 0.3s;
-  text-decoration: none;
-  display: inline-block;
-  animation: ghostBreathe 5s ease-in-out infinite;
-  animation-delay: var(--breathe-delay, 0s);
-}
-
-.ghost-pill-btn:hover {
-  background: color-mix(in srgb, var(--pill-color) 8%, transparent);
-  border-style: solid;
-  border-color: color-mix(in srgb, var(--pill-color) 40%, transparent);
-}
-
-@keyframes ghostBreathe {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.7; }
-}
-
-/* ============================================
-   FOOTER — Tagline + deck link
-   ============================================ */
-
-.portal-footer {
-  flex-shrink: 0;
-  text-align: center;
-  padding: 1.25rem 1.5rem 1.5rem;
-}
-
-.portal-tagline {
-  font-size: 0.8rem;
-  letter-spacing: 0.1em;
-  color: rgba(232, 232, 232, 0.25);
-}
-
-.portal-deck-link {
-  font-size: 0.75rem;
-  color: rgba(232, 232, 232, 0.2);
-  text-decoration: none;
-  margin-left: 1rem;
-  transition: color 0.2s;
-}
-
-.portal-deck-link:hover {
+.rco-waitlist-confirmation {
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
   color: var(--glow-teal);
+  font-style: italic;
+}
+
+@media (max-width: 600px) {
+  .rco-waitlist-form {
+    flex-direction: column;
+  }
 }
 
 /* ============================================
@@ -680,65 +1464,72 @@ a { color: inherit; }
    ============================================ */
 
 @media (max-width: 600px) {
-  /* Portal becomes scrollable on mobile */
-  html, body { overflow: auto; }
-  .portal {
-    height: auto;
-    min-height: 100vh;
-    overflow: visible;
+  .beat {
+    padding: 3rem 1rem;
   }
 
-  /* Nav */
-  .nav-inner { padding: 0.5rem 0.75rem; gap: 0.4rem; }
-  .nav-logo { font-size: 0.9rem; }
-  .nav-search { max-width: none; flex: 1; }
-  .nav-search-input { font-size: 0.8rem; padding: 0.4rem 0.6rem; }
-  .nav-link { font-size: 0.7rem; }
-
-  /* Chat takes most of the screen */
-  .chat-zone {
-    padding: 0.75rem;
-    min-height: 55vh;
+  .beat-opening {
+    min-height: 100svh;
   }
+
+  .founding-question {
+    gap: 0.25em;
+  }
+
+  .beat-shift {
+    min-height: 70vh;
+  }
+
+  .beat-story {
+    min-height: 60vh;
+  }
+
+  .story-door {
+    padding: 0.75rem 1.5rem;
+  }
+
+  .beat-coming-soon {
+    min-height: 30vh;
+  }
+
+  .coming-soon-grid {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .beat-organism {
+    min-height: 80vh;
+    padding: 3rem 1rem;
+  }
+
   .organism-chat-box {
     padding: 16px;
     max-width: 100%;
+    max-height: 350px;
   }
+
   .organism-msg { font-size: 0.85rem; max-width: 92%; }
   .organism-msg-who { font-size: 0.6rem; }
   .organism-chat-input { font-size: 0.9rem; padding: 10px 12px; }
   .organism-chat-send { padding: 10px 14px; }
 
-  /* Enter portal button */
-  .enter-portal-btn { font-size: 0.8rem; padding: 0.4rem 1rem; }
-
-  /* Pills switch from absolute to flow layout */
-  .pills-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.25rem;
-    padding: 0.75rem;
+  .beat-close {
+    min-height: 50vh;
   }
-  .ghosts-container {
-    padding-top: 0;
-    margin-top: -0.25rem;
-  }
-  .door-pill {
-    position: static !important;
-    display: inline-flex;
-    margin: 0;
-  }
-  .door-pill-btn { font-size: 0.7rem; padding: 0.35rem 0.85rem; animation: none; opacity: 0.85; }
-  .door-dept-name { display: none; }
 
-  /* Ghost pills */
-  .ghost-pill-btn { font-size: 0.65rem; padding: 0.3rem 0.7rem; animation: none; opacity: 0.5; }
+  .ghosts-row {
+    gap: 0.35rem;
+  }
 
-  /* Footer */
-  .portal-footer { padding: 1rem 0.75rem; }
-  .portal-tagline { font-size: 0.7rem; }
-  .portal-deck-link { font-size: 0.65rem; display: block; margin-left: 0; margin-top: 0.5rem; }
+  .ghost-pill {
+    font-size: 0.65rem;
+    padding: 0.3rem 0.75rem;
+  }
+
+  .ghost-pill-seed {
+    max-width: 200px;
+    font-size: 0.75rem;
+  }
 
   /* Admin */
   .ij-admin-table-wrap { overflow-x: auto; }

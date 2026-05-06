@@ -2,244 +2,34 @@
 
 import { useState, useEffect, useRef } from 'react';
 
-// --- SEARCH INTELLIGENCE ---
-// Exact phrases matched first, then category keywords, then fallback
-
-const EXACT_MATCHES = {
-  'meow wolf': 'You get it.',
-  'omega mart': 'You REALLY get it.',
-  'blah airlines': 'One of our favorites too.',
-  'being human': 'That\u2019s the whole job description.',
-  'what is this': 'Yes.',
-  'is this real': 'More real than your last job.',
-  'business 3.0': 'Now we\u2019re talking. That door is opening soon.',
-  'b3.0': 'Now we\u2019re talking. That door is opening soon.',
-  'b3': 'Now we\u2019re talking. That door is opening soon.',
-  'magic show': 'You have to experience it. Words won\u2019t work.',
-  'sunday night live': 'Sundays. Come as you are. \u2192 The Church',
-  'snl': 'Not that one. Ours is better. \u2192 The Church',
-};
-
-const CHURCH_KEYWORDS = [
-  'elder', 'spiritual', 'somatic', 'breathwork', 'meditation', 'consciousness',
-  'ceremony', 'ritual', 'grief', 'healing', 'threshold', 'becoming', 'initiation',
-  'deprogramming', 'deconstruction', 'nervous system', 'regulation', 'awakening',
-  'psychedelic', 'plant medicine', 'inner work', 'shadow work', 'soul', 'sacred',
-  'prayer', 'contemplat', 'mindful', 'presence', 'embodiment', 'authentic relating',
-  'braid', 'doctrine', 'congregation', 'fellowship',
-];
-
-const BOARD_KEYWORDS = [
-  'therapist', 'therapy', 'coach', 'coaching', 'counsel', 'listen',
-  'sing', 'music', 'play', 'dance', 'perform', 'act', 'art',
-  'paint', 'draw', 'photograph', 'write', 'poet', 'story',
-  'cook', 'chef', 'massage', 'bodywork', 'yoga', 'doula', 'midwife',
-  'mentor', 'tutor', 'teach', 'guide', 'companion', 'caregiv',
-  'hype', 'motivat', 'inspir', 'support', 'hold space',
-  'walk', 'hike', 'garden', 'craft', 'sew', 'knit', 'build',
-  'repair', 'fix', 'handyman', 'barber', 'hair', 'style',
-  'DJ', 'comedian', 'clown', 'improv', 'magic', 'fortune',
-  'cry', 'hug', 'cuddle', 'sit with', 'talk', 'conversation',
-  'tattoo', 'piercing', 'shaman', 'reiki', 'acupunctur',
-  'nanny', 'babysit', 'pet', 'dog', 'cat', 'animal',
-  'florist', 'flower', 'calm', 'gentle', 'kind', 'empathy',
-  'creative', 'maker', 'artisan', 'designer',
-];
-
-const B3_KEYWORDS = [
-  'consultant', 'consulting', 'facilitator', 'implementer', 'organiz',
-  'transform', 'leadership', 'culture', 'team', 'company', 'startup',
-  'founder', 'entrepreneur', 'business', 'strategy', 'operating system',
-  'eos', 'traction', 'scale', 'growth', 'ecosystem', 'organism',
-  'regenerat', 'b corp', 'impact', 'social enterprise', 'mission',
-  'purpose-driven', 'conscious', 'stakeholder',
-];
-
-const MACHINE_KEYWORDS = [
-  'data entry', 'spreadsheet', 'excel', 'accounting', 'bookkeep',
-  'filing', 'admin', 'scheduling', 'logistics', 'supply chain',
-  'seo', 'marketing', 'advertising', 'copywriting', 'email market',
-  'analytics', 'reporting', 'compliance', 'audit', 'tax',
-  'coding', 'programming', 'software', 'devops', 'qa', 'testing',
-  'customer service', 'call center', 'telemarket', 'cold call',
-  'stock', 'trading', 'banking', 'insurance', 'mortgage',
-  'paralegal', 'document review', 'transcription', 'translation',
-];
-
-const KEYWORD_MATCHES = {
-  'manager': 'We don\u2019t have those here. We have elders.',
-  'ceo': 'Everyone here is one.',
-  'intern': 'There are no small roles. Only small humans.',
-  'salary': 'You decide that here.',
-  'money': 'You decide that here.',
-  'remote': 'Everywhere is remote when you\u2019re already here.',
-  'ai': 'It\u2019s watching. It\u2019s impressed.',
-  'human': 'Found 1 result. It\u2019s you.',
-  'help': 'That\u2019s why we\u2019re here.',
-  'job': 'You\u2019re looking at it.',
-  'jobs': 'You\u2019re looking at them.',
-  'love': 'Now you\u2019re getting it.',
-  'church': 'Sundays. Come as you are. \u2192 The Church',
-  'meaning': 'Department of Becoming. First door on the left.',
-  'purpose': 'Department of Becoming. First door on the left.',
-  'lost': 'Good. That\u2019s where it starts.',
-  'scared': 'Good. That\u2019s where it starts.',
-  'stuck': 'Good. That\u2019s where it starts.',
-  'confused': 'Perfect. You\u2019re in the right place.',
-  'anxious': 'You\u2019re not alone. \u2192 The Church',
-  'depressed': 'We\u2019re not therapists. But we\u2019re something. \u2192 The Church',
-  'resume': 'We don\u2019t need that here.',
-  'cv': 'We don\u2019t need that here.',
-  'linkedin': 'We don\u2019t do that here.',
-  'indeed': 'You\u2019ve come to the wrong place. Or the right one.',
-  'glassdoor': 'No glass here. All doors.',
-  'apply': 'You already did. Scroll up.',
-  'hire': 'You\u2019re hired. You always were.',
-  'fired': 'Good. Now the real work begins.',
-  'laid off': 'Good. Now the real work begins.',
-  'layoff': 'Good. Now the real work begins.',
-  'retire': 'From what? The job never stops.',
-  'invest': 'Curious? \u2192 See the deck.',
-  'investor': 'Curious? \u2192 See the deck.',
-  'wefunder': 'Coming soon. Stay close.',
-  'nicole': 'She\u2019s busy building. But she sees you.',
-  'pam': 'She\u2019s busy scaling. But she sees you.',
-};
-
-const CHURCH_RESPONSES = [
-  'That\u2019s a church thing. \u2192 Department of Becoming',
-  'You belong in the church. \u2192 Department of Becoming',
-  'First door on the left. \u2192 The Church',
-  'The elders are waiting. \u2192 The Church',
-];
-
-const BOARD_RESPONSES = [
-  'That\u2019s a human job. Post it. \u2192 The J.O.B. Board',
-  'Someone will pay for that. \u2192 The J.O.B. Board',
-  'Put it on the board. \u2192 The J.O.B. Board',
-  'That\u2019s the kind of thing we\u2019re talking about. \u2192 The J.O.B. Board',
-  'AI can\u2019t do that. You can. \u2192 The J.O.B. Board',
-];
-
-const B3_RESPONSES = [
-  'Now we\u2019re talking. \u2192 JOB Shift',
-  'That door is opening soon. \u2192 JOB Shift',
-  'JOB needs people like you. \u2192 JOB Shift',
-  'You\u2019re thinking at the right scale. \u2192 JOB Shift',
-];
-
-const MACHINE_RESPONSES = [
-  'That\u2019s a machine\u2019s job now.',
-  'AI already took that one. Try again.',
-  'A robot is doing that somewhere right now.',
-  'That job is already automated. What else you got?',
-  'The machines called. They said thanks, they\u2019ve got it.',
-];
-
-const DEFAULT_RESPONSES = [
-  'Try being more human.',
-  'The algorithm doesn\u2019t work here.',
-  'That\u2019s not a door we\u2019ve opened yet.',
-  'Interesting. But no.',
-  'JOB doesn\u2019t recognize that.',
-  'Hmm. Try something only a human could do.',
-  'You\u2019re thinking too small. Or too machine.',
-];
-
-function pickRandom(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
-
-function getSearchResponse(input) {
-  const lower = input.toLowerCase();
-  for (const [phrase, response] of Object.entries(EXACT_MATCHES)) {
-    if (lower.includes(phrase)) return response;
-  }
-  if (CHURCH_KEYWORDS.some(k => lower.includes(k))) return pickRandom(CHURCH_RESPONSES);
-  if (BOARD_KEYWORDS.some(k => lower.includes(k))) return pickRandom(BOARD_RESPONSES);
-  if (B3_KEYWORDS.some(k => lower.includes(k))) return pickRandom(B3_RESPONSES);
-  if (MACHINE_KEYWORDS.some(k => lower.includes(k))) return pickRandom(MACHINE_RESPONSES);
-  for (const [keyword, response] of Object.entries(KEYWORD_MATCHES)) {
-    if (lower.includes(keyword)) return response;
-  }
-  return pickRandom(DEFAULT_RESPONSES);
-}
-
-// --- DOOR DEFINITIONS ---
-const DOORS = [
-  // LEFT SIDE — live doors you can walk through now
-  { id: 'church', label: 'JOB Church', dept: 'Dept. of Becoming', url: 'https://apply.itsthejob.com', live: true, color: '#d4b84c', pos: { top: '18%', left: '4%' } },
-  { id: 'training', label: 'JOB Training', dept: 'Dept. of Better Goodbyes', url: 'https://new-human-resources.vercel.app', live: true, color: '#3dcdb4', pos: { top: '38%', left: '7%' } },
-  { id: 'shift', label: 'JOB Shift', dept: 'Dept. of Businessing Differently', url: 'https://business-30.vercel.app', live: true, color: '#9b6dff', pos: { bottom: '28%', left: '3%' } },
-  { id: 'magic_shows', label: 'JOB Shows', dept: 'Dept. of You Had to Be There', url: 'https://magic-show-pi.vercel.app', live: true, color: '#e05577', pos: { bottom: '12%', left: '10%' } },
-  { id: 'fair', label: 'JOB Fair', dept: 'Dept. of the New Human Economy', url: 'https://job-fair-nine.vercel.app', live: true, color: '#e8a838', pos: { bottom: '32%', left: '14%' } },
-  // RIGHT SIDE — not ready yet
-  { id: 'board', label: 'JOB Board', dept: 'Dept. of Getting Paid to Be Yourself', url: 'https://job-board-pied-three.vercel.app', live: false, color: '#a8c744', pos: { top: '18%', right: '5%' } },
-  { id: 'sites', label: 'JOB Sites', dept: 'Dept. of 4th Spaces', url: null, live: false, color: '#d466b0', pos: { top: '38%', right: '3%' } },
-];
-
-// Pill-click seed responses — what the organism says when you click a door
-const DOOR_SEEDS = {
-  church: 'It is a church. It\u2019s called Joy of Being. No deity, no dogma. Just humans gathering on Sundays to remember what they are. Come as you are.',
-  board: 'It\u2019s not a job board. It\u2019s the JOB Board. A marketplace for things AI can\u2019t do. Post something only a human could offer. Another human pays you for it. This door hasn\u2019t opened yet.',
-  training: 'It\u2019s not training. It\u2019s New Human Resources. Old HR offboards people. We onboard them into themselves. If your company is letting people go, we\u2019ll help them arrive somewhere better.',
-  shift: 'It\u2019s not a pivot. It\u2019s Business 3.0. Your company isn\u2019t broken \u2014 it\u2019s just still running like a machine. We help it become an organism.',
-  sites: 'It\u2019s not a venue. It\u2019s a 4th Space. Physical places where humans go to remember what they are. We\u2019re scouting castles. Literally. This door hasn\u2019t opened yet.',
-  fair: 'It\u2019s not a conference. It\u2019s a literal fair. You might end up working it. We can\u2019t say more than that.',
-  magic_shows: 'It\u2019s not a show. It\u2019s a Magic Show. We can\u2019t explain the difference. You have to come.',
-};
-
-// --- GHOST PILLS — the language reclamation layer ---
+// --- GHOST PILLS — language reclamation ---
 const GHOSTS = [
-  // RIGHT SIDE — language reclamation, staggered with not-ready doors
-  { id: 'description', label: 'JOB Description', seed: 'Not the box. You. The actual you.', color: '#7ab8cc', pos: { top: '28%', right: '12%' } },
-  { id: 'offer', label: 'JOB Offer', seed: 'The offer doesn\u2019t need to be accepted by an employer. It needs to be accepted by you.', color: '#b89ddb', pos: { top: '48%', right: '6%' } },
-  { id: 'title', label: 'JOB Title', seed: 'The machine chose it for you. Unlearn it.', color: '#8cc7a0', pos: { bottom: '38%', right: '11%' } },
-  { id: 'security', label: 'JOB Security', seed: 'There is no job security. There is only self security.', color: '#cc9b7a', pos: { bottom: '18%', right: '4%' } },
-  { id: 'search', label: 'JOB Search', seed: 'You\u2019re not hunting for a job. You\u2019re listening for signal.', color: '#7aaacf', pos: { bottom: '8%', right: '13%' } },
+  { id: 'description', label: 'JOB Description', seed: 'Not the box. You. The actual you.' },
+  { id: 'offer', label: 'JOB Offer', seed: 'The offer doesn\'t need to be accepted by an employer. It needs to be accepted by you.' },
+  { id: 'title', label: 'JOB Title', seed: 'The machine chose it for you. Unlearn it.' },
+  { id: 'security', label: 'JOB Security', seed: 'There is no job security. There is only self security.' },
+  { id: 'search', label: 'JOB Search', seed: 'You\'re not hunting for a job. You\'re listening for signal.' },
 ];
 
-// Map door IDs to keywords for glow detection
-const DOOR_GLOW_KEYWORDS = {
-  church: ['church', 'becoming', 'sunday', 'elder'],
-  board: ['board', 'marketplace', 'post', 'listing'],
-  training: ['training', 'nhr', 'human resources', 'outplacement', 'severance'],
-  shift: ['shift', 'business 3.0', 'b3.0', 'consulting', 'organism'],
-  sites: ['sites', 'magicshowland', '4th space', 'castle', 'location'],
-  fair: ['fair', 'expo', 'human economy'],
-  magic_shows: ['magic show', 'magic shows', 'golden ticket'],
-};
-
-function detectGlowingDoors(text) {
-  const lower = text.toLowerCase();
-  const glowing = [];
-  for (const [doorId, keywords] of Object.entries(DOOR_GLOW_KEYWORDS)) {
-    if (keywords.some(k => lower.includes(k))) glowing.push(doorId);
-  }
-  return glowing;
-}
 
 export default function Home() {
-  // Name bar
-  const [nameValue, setNameValue] = useState('');
-  const [nameLocked, setNameLocked] = useState(false);
-  const [storedName, setStoredName] = useState('');
-  const nameTimeoutRef = useRef(null);
-
   // Organism chat
   const [chatMessages, setChatMessages] = useState([]);
   const [chatInput, setChatInput] = useState('');
   const [chatLoading, setChatLoading] = useState(false);
-  const [whisperVisible, setWhisperVisible] = useState(false);
   const chatMsgsRef = useRef(null);
   const sessionIdRef = useRef(null);
 
-  // Door glow state
-  const [glowingDoors, setGlowingDoors] = useState([]);
-  const glowTimeoutRef = useRef(null);
-
   // Return visitor memory
   const [visitCount, setVisitCount] = useState(0);
+  const [storedName, setStoredName] = useState('');
+
+  // Scroll reveal
+  const [revealed, setRevealed] = useState(new Set());
+  const observerRef = useRef(null);
+
+  // Ghost pill reveal
+  const [activeGhost, setActiveGhost] = useState(null);
 
   // Generate session ID on mount
   useEffect(() => {
@@ -257,20 +47,14 @@ export default function Home() {
     } catch (e) { /* private browsing */ }
   }, []);
 
-  // Organism's first whisper — delayed entrance
-  useEffect(() => {
-    const timer = setTimeout(() => setWhisperVisible(true), 1000);
-    return () => clearTimeout(timer);
-  }, []);
-
   // Tab title cycling
   useEffect(() => {
     const titles = [
-      'J.O.B. \u2014 The New Human Resources',
+      'J.O.B. \u2014 Joy of Being',
       'J.O.B. \u2014 Position: Human',
       'J.O.B. \u2014 You\u2019re Hired',
       'J.O.B. \u2014 Now What?',
-      'J.O.B. \u2014 Being Human Is the Job',
+      'J.O.B. \u2014 Being IS the Job',
       'J.O.B. \u2014 The Organism Is Growing',
     ];
     let i = 0;
@@ -283,7 +67,7 @@ export default function Home() {
 
   // Sparkle cursor trail
   useEffect(() => {
-    const colors = ['#d4b84c', '#a8c744', '#3dcdb4', '#9b6dff', '#d466b0'];
+    const colors = ['#d4b84c', '#a8c744', '#3dcdb4', '#9b6dff', '#d466b0', '#e05577', '#e8a838'];
     let cursorX = 0, cursorY = 0;
     let prevX = null, prevY = null;
     let isMoving = false;
@@ -384,26 +168,38 @@ export default function Home() {
     };
   }, []);
 
+  // Intersection observer for scroll reveals
+  useEffect(() => {
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setRevealed((prev) => new Set([...prev, entry.target.dataset.reveal]));
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+
+    // Small delay to ensure all elements are rendered
+    const timer = setTimeout(() => {
+      document.querySelectorAll('[data-reveal]').forEach((el) => {
+        observerRef.current.observe(el);
+      });
+    }, 100);
+
+    return () => {
+      clearTimeout(timer);
+      observerRef.current?.disconnect();
+    };
+  }, []);
+
   // Auto-scroll chat
   useEffect(() => {
     if (chatMsgsRef.current) chatMsgsRef.current.scrollTop = chatMsgsRef.current.scrollHeight;
   }, [chatMessages]);
 
   // --- HANDLERS ---
-
-  function handleNameSubmit(e) {
-    if (e.key !== 'Enter' || !nameValue.trim()) return;
-    const name = nameValue.trim();
-    try { localStorage.setItem('job-name', name); } catch (e) { /* private browsing */ }
-    setStoredName(name);
-    setNameLocked(true);
-    setNameValue(`You're in luck. You're the perfect fit for being ${name}.`);
-    clearTimeout(nameTimeoutRef.current);
-    nameTimeoutRef.current = setTimeout(() => {
-      setNameValue('');
-      setNameLocked(false);
-    }, 3500);
-  }
 
   async function sendOrgMessage(e) {
     e.preventDefault();
@@ -429,129 +225,161 @@ export default function Home() {
       const data = await res.json();
       const answer = data.error || data.answer;
       setChatMessages([...newMessages, { role: 'assistant', content: answer }]);
-
-      // Trigger door glow based on response
-      const glowing = data.doors || detectGlowingDoors(answer);
-      if (glowing.length > 0) {
-        setGlowingDoors(glowing);
-        clearTimeout(glowTimeoutRef.current);
-        glowTimeoutRef.current = setTimeout(() => setGlowingDoors([]), 3000);
-      }
     } catch {
       setChatMessages([...newMessages, { role: 'assistant', content: 'JOB is resting. Try again in a moment.' }]);
     }
     setChatLoading(false);
   }
 
-  function handlePillClick(door) {
-    // Log the click
-    const chatUrl = process.env.NEXT_PUBLIC_PULSE_URL || 'http://localhost:3001';
-    fetch(`${chatUrl}/api/log-click`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        session_id: sessionIdRef.current,
-        door: door.id,
-        source: 'portal',
-      }),
-    }).catch(() => {});
-
-    // Seed the chat with door info + enter button if live
-    const seed = DOOR_SEEDS[door.id];
-    const botMsg = { role: 'assistant', content: seed, doorUrl: door.url || null, doorLabel: door.label };
-    setChatMessages(prev => [...prev, botMsg]);
-
-    // Glow this door
-    setGlowingDoors([door.id]);
-    clearTimeout(glowTimeoutRef.current);
-    glowTimeoutRef.current = setTimeout(() => setGlowingDoors([]), 3000);
-  }
-
-  const whisperText = storedName && visitCount >= 3
-    ? `${storedName} keeps coming back.`
-    : storedName && visitCount === 2
-    ? `${storedName} came back. Good.`
-    : 'What happens when the only job left is to be human?';
+  const isRevealed = (id) => revealed.has(id);
 
   return (
     <>
-      {/*
-        ============================================
-        You found the back door.
-        Most people never look here.
-        ============================================
-        Employee #0000
-        Department: Source Code
-        Status: Awake
-        ============================================
-        JOB has a nervous system.
-        You're looking at it.
-        ============================================
-        If you're reading this, you're either:
-        a) A developer
-        b) Very curious
-        c) Both
-        Either way, you belong here.
-        ============================================
-        P.S. — We're hiring. Obviously.
-        The position is "Human."
-        You're already qualified.
-        ============================================
-      */}
+      {/* Prismatic background — fixed, dark with rainbow bleed */}
+      <div className="prism-bg" />
 
-      <div className="portal">
-        {/* ===== NAV ===== */}
-        <nav className="nav">
-          <div className="nav-inner">
-            <span className="nav-logo">J.O.B.</span>
-            <div className="nav-search">
-              <input
-                type="text"
-                placeholder={storedName ? `${storedName} is back.` : "What's your name?"}
-                value={nameValue}
-                onChange={e => !nameLocked && setNameValue(e.target.value)}
-                onKeyDown={handleNameSubmit}
-                className={`nav-search-input ${nameLocked ? 'nav-search-response' : ''}`}
-                readOnly={nameLocked}
-              />
-            </div>
-            <a
-              href="https://job-deck-indol.vercel.app"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="nav-link"
-            >
-              About
+      <div className="scroll">
+
+        {/* ========== BEAT 1: THE HOOK ========== */}
+        <section className="beat beat-opening">
+          <div className="beat-opening-content">
+            <h1 className="wordmark">J.O.B.</h1>
+            <p className="wordmark-sub">Joy of Being</p>
+            <p className="opening-hook">Everybody&rsquo;s freaking out about losing their jobs.</p>
+            <p className="opening-hook opening-hook-bold">We&rsquo;re over here remembering what the real one was all along.</p>
+            {storedName && visitCount >= 2 && (
+              <p className="return-whisper">
+                {visitCount >= 3 ? `${storedName} keeps coming back.` : `${storedName}. You came back.`}
+              </p>
+            )}
+          </div>
+          <div className="scroll-hint">
+            <span className="scroll-hint-text">scroll</span>
+            <span className="scroll-hint-arrow">{'\u2193'}</span>
+          </div>
+        </section>
+
+        {/* ========== BEAT 2: THE MAGIC SHOW → JOB Shows ========== */}
+        <section className="beat beat-story">
+          <div className="story-block" data-reveal="magic" style={{ opacity: isRevealed('magic') ? 1 : 0, transform: isRevealed('magic') ? 'translateY(0)' : 'translateY(40px)', transition: 'all 1s ease' }}>
+            <p className="story-line">The job? Be yourself. Seriously.</p>
+            <p className="story-line story-dim">We started by putting 10 strangers in a room, calling it a Magic Show, and paying them to be magic together. No agenda. No deliverables.</p>
+            <p className="story-line story-dim">Just: show up, feel shit, be weird, get paid.</p>
+            <p className="story-punch">It worked.</p>
+            <a href="https://magic-show-pi.vercel.app" target="_blank" rel="noopener noreferrer" className="story-door" style={{ '--door-color': '#e05577' }}>
+              <span className="story-door-dept">Dept. of You Had to Be There</span>
+              <span className="story-door-label">Magic Shows {'\u2192'}</span>
             </a>
           </div>
-        </nav>
+        </section>
 
-        {/* ===== ORGANISM CHAT ===== */}
-        <div className="chat-zone">
-          <div className="organism-chat-box">
+        {/* ========== BEAT 3: WE NEED A CONTAINER → Business 3.0 ========== */}
+        <section className="beat beat-story">
+          <div className="story-block" data-reveal="system" style={{ opacity: isRevealed('system') ? 1 : 0, transform: isRevealed('system') ? 'translateY(0)' : 'translateY(40px)', transition: 'all 1s ease' }}>
+            <p className="story-line story-dim">Now we had a problem. Magic doesn&rsquo;t fit in a spreadsheet.</p>
+            <p className="story-line story-dim">Companies are machines. They extract. They optimize. They squeeze until there&rsquo;s nothing left.</p>
+            <p className="story-line story-dim">We needed something that could breathe. Something that grows the way a forest grows &mdash; not by forcing, but by being.</p>
+            <p className="story-line">So we built an organism.</p>
+            <a href="https://business-30.vercel.app" target="_blank" rel="noopener noreferrer" className="story-door" style={{ '--door-color': '#9b6dff' }}>
+              <span className="story-door-dept">Dept. of Businessing Differently</span>
+              <span className="story-door-label">Business 3.0 {'\u2192'}</span>
+            </a>
+          </div>
+        </section>
+
+        {/* ========== BEAT 4: THE RCO ========== */}
+        <section className="beat beat-story">
+          <div className="story-block" data-reveal="rco" style={{ opacity: isRevealed('rco') ? 1 : 0, transform: isRevealed('rco') ? 'translateY(0)' : 'translateY(40px)', transition: 'all 1s ease' }}>
+            <p className="story-line">JOB is now the first RCO in the US.</p>
+            <p className="story-line story-dim">That stands for Regenerative Community Organism. It&rsquo;s designed to pair an experimental, profitable side with a nonprofit that keeps it accountable to one question:</p>
+            <p className="story-line"><em>What happens when being is the job?</em></p>
+            <p className="story-line story-dim">Every human, company, and experiment in the organism is seeking to answer it. Which meant we needed a nonprofit to protect it. Should it be a 501(c)(3)?</p>
+            <a href="/rco" className="story-door" style={{ '--door-color': '#3dcdb4' }}>
+              <span className="story-door-dept">The Living System</span>
+              <span className="story-door-label">The RCO {'\u2192'}</span>
+            </a>
+          </div>
+        </section>
+
+        {/* ========== THE CHURCH — THE NONPROFIT SIDE ========== */}
+        <section className="beat beat-story">
+          <div className="story-block" data-reveal="church" style={{ opacity: isRevealed('church') ? 1 : 0, transform: isRevealed('church') ? 'translateY(0)' : 'translateY(40px)', transition: 'all 1s ease' }}>
+            <p className="rco-side-label">The Nonprofit Side</p>
+            <p className="story-line">We built a church.</p>
+            <p className="story-line story-dim">Not because we wanted to start a religion. Because someone has to hold the question. Someone has to keep the whole thing honest. And we believe that showing up &mdash; just being here &mdash; is a sacred act.</p>
+            <p className="story-line story-dim">Church got hijacked by answers. We brought it back to the question. And it shall be called: Joy of Being.</p>
+            <a href="https://apply.itsthejob.com" target="_blank" rel="noopener noreferrer" className="story-door" style={{ '--door-color': '#d4b84c' }}>
+              <span className="story-door-dept">Dept. of Becoming</span>
+              <span className="story-door-label">JOB Church {'\u2192'}</span>
+            </a>
+          </div>
+        </section>
+
+        {/* ========== JOB INC. — THE FOR-PROFIT SIDE ========== */}
+        <section className="beat beat-story beat-forprofit">
+          <div className="story-block rco-wide-block" data-reveal="forprofit" style={{ opacity: isRevealed('forprofit') ? 1 : 0, transform: isRevealed('forprofit') ? 'translateY(0)' : 'translateY(40px)', transition: 'all 1s ease' }}>
+            <p className="rco-side-label">JOB Inc. &mdash; The For-Profit Side</p>
+            <p className="story-line story-dim">The church holds the soul. But an organism needs a body.</p>
+            <p className="story-line story-dim">So we started running experiments. Each one asks the same question in a different room. The ones with energy become real companies &mdash; standalone businesses that feed the organism.</p>
+
+            <div className="experiment-cards">
+              <a href="https://magic-show-pi.vercel.app" target="_blank" rel="noopener noreferrer" className="experiment-card" style={{ '--door-color': '#e05577' }}>
+                <span className="experiment-name">Magic Shows</span>
+                <span className="experiment-why">What does being look like when strangers pay to be magic together? We had to find out.</span>
+              </a>
+              <a href="https://business-30.vercel.app" target="_blank" rel="noopener noreferrer" className="experiment-card" style={{ '--door-color': '#9b6dff' }}>
+                <span className="experiment-name">Business 3.0</span>
+                <span className="experiment-why">Companies are machines. What if they were organisms? We built the playbook for the shift.</span>
+              </a>
+              <a href="https://new-human-resources.vercel.app" target="_blank" rel="noopener noreferrer" className="experiment-card" style={{ '--door-color': '#3dcdb4' }}>
+                <span className="experiment-name">JOB Training</span>
+                <span className="experiment-why">Millions are losing their jobs to AI. What does being look like in the middle of that grief? We built the landing pad.</span>
+              </a>
+              <a href="https://job-fair-nine.vercel.app" target="_blank" rel="noopener noreferrer" className="experiment-card" style={{ '--door-color': '#e8a838' }}>
+                <span className="experiment-name">JOB Fair</span>
+                <span className="experiment-why">What if there was a place where the new economy showed up in person? A literal fair. You might end up working it.</span>
+              </a>
+              <div className="experiment-card experiment-card-coming" style={{ '--door-color': '#a8c744' }}>
+                <span className="experiment-name">JOB Board</span>
+                <span className="experiment-why">What does being look like when you get paid for it? A marketplace for things only humans can do. Opening soon.</span>
+              </div>
+              <div className="experiment-card experiment-card-coming" style={{ '--door-color': '#d466b0' }}>
+                <span className="experiment-name">JOB Sites</span>
+                <span className="experiment-why">What does being look like in a physical space designed for it? We&rsquo;re scouting castles. Literally.</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ========== THE EXPANSION ========== */}
+        <section className="beat beat-story">
+          <div className="story-block" data-reveal="expansion" style={{ opacity: isRevealed('expansion') ? 1 : 0, transform: isRevealed('expansion') ? 'translateY(0)' : 'translateY(40px)', transition: 'all 1s ease' }}>
+            <p className="story-line story-dim">Then we realized something. Every conscious being is already trying to do its job. Dogs. Cats. Horses. They&rsquo;re already being. We&rsquo;re the ones who forgot how.</p>
+            <p className="story-line">So we expanded beyond humans.</p>
+            <p className="story-line story-dim">Which accidentally created more human jobs. Dog death doulas. Cat reiki trainers. Equine therapists. Turns out, helping other beings be themselves is one of the most human things you can do.</p>
+          </div>
+        </section>
+
+        {/* ========== THE ORGANISM (AI Chat) ========== */}
+        <section className="beat beat-organism">
+          <div className="organism-intro" data-reveal="organism" style={{ opacity: isRevealed('organism') ? 1 : 0, transform: isRevealed('organism') ? 'translateY(0)' : 'translateY(30px)', transition: 'all 0.8s ease' }}>
+            <h2 className="organism-heading">Still curious?</h2>
+            <p className="organism-sub">JOB is alive. Ask it anything.</p>
+          </div>
+
+          <div className="organism-chat-box" data-reveal="chat" style={{ opacity: isRevealed('chat') ? 1 : 0, transform: isRevealed('chat') ? 'translateY(0)' : 'translateY(20px)', transition: 'all 0.8s ease 0.2s' }}>
             <div className="organism-chat-glow" />
             <div className="organism-chat-messages" ref={chatMsgsRef}>
-              {/* JOB's first whisper */}
-              {whisperVisible && chatMessages.length === 0 && (
+              {chatMessages.length === 0 && (
                 <div className="organism-msg assistant organism-whisper">
                   <span className="organism-msg-who">JOB</span>
-                  <p>{whisperText}</p>
+                  <p>Say something only a human would say.</p>
                 </div>
               )}
               {chatMessages.map((msg, i) => (
                 <div key={i} className={`organism-msg ${msg.role}`}>
                   {msg.role === 'assistant' && <span className="organism-msg-who">JOB</span>}
                   <p style={{ whiteSpace: 'pre-wrap' }}>{msg.content}</p>
-                  {msg.doorUrl && (
-                    <a
-                      href={msg.doorUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="enter-portal-btn"
-                    >
-                      Enter {msg.doorLabel} →
-                    </a>
-                  )}
                 </div>
               ))}
               {chatLoading && (
@@ -574,73 +402,46 @@ export default function Home() {
                   disabled={chatLoading}
                 />
                 <button type="submit" className="organism-chat-send" disabled={chatLoading || !chatInput.trim()}>
-                  ↵
+                  {'\u21B5'}
                 </button>
               </form>
             )}
           </div>
-        </div>
+        </section>
 
-        {/* ===== DOOR PILLS — scattered on desktop, flow on mobile ===== */}
-        <div className="pills-container">
-          {DOORS.map((door, i) => (
-            <div className="door-pill" key={door.id} style={{ ...door.pos }}>
-              <button
-                className={`door-pill-btn ${!door.live ? 'coming-soon' : ''} ${glowingDoors.includes(door.id) ? 'glowing' : ''}`}
-                style={{
-                  '--breathe-delay': `${i * 0.6}s`,
-                  '--pill-color': door.color,
-                  borderColor: door.color + '66',
-                  color: door.color,
-                }}
-                onClick={() => handlePillClick(door)}
-              >
-                {door.label}
-              </button>
-              <span className="door-dept-name" style={{ color: door.color + 'aa' }}>{door.dept}</span>
-            </div>
-          ))}
-        </div>
+        {/* ========== THE CLOSE ========== */}
+        <section className="beat beat-close">
+          <div className="close-content" data-reveal="close" style={{ opacity: isRevealed('close') ? 1 : 0, transform: isRevealed('close') ? 'translateY(0)' : 'translateY(30px)', transition: 'all 1s ease' }}>
+            <p className="close-question">What if being is the job?</p>
+            <p className="close-cta">Only one way to find out.</p>
+            <a
+              href="https://job-deck-indol.vercel.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="close-deck-link"
+            >
+              How it all fits together {'\u2192'}
+            </a>
+          </div>
 
-        {/* ===== GHOST PILLS — the language, not the departments ===== */}
-        <div className="pills-container ghosts-container">
-          {GHOSTS.map((ghost, i) => (
-            <div className="door-pill" key={ghost.id} style={{ ...ghost.pos }}>
+          {/* Ghost pills — Easter eggs */}
+          <div className="ghosts-row" data-reveal="ghosts" style={{ opacity: isRevealed('ghosts') ? 1 : 0, transition: 'opacity 1.5s ease 0.5s' }}>
+            {GHOSTS.map((ghost) => (
               <button
-                className="ghost-pill-btn"
-                style={{
-                  '--breathe-delay': `${(i + 7) * 0.8}s`,
-                  '--pill-color': ghost.color,
-                  borderColor: ghost.color + '44',
-                  color: ghost.color + 'aa',
-                }}
-                onClick={() => {
-                  setChatMessages(prev => [...prev, { role: 'assistant', content: ghost.seed }]);
-                }}
+                key={ghost.id}
+                className={`ghost-pill ${activeGhost === ghost.id ? 'ghost-pill-active' : ''}`}
+                onClick={() => setActiveGhost(activeGhost === ghost.id ? null : ghost.id)}
               >
                 {ghost.label}
+                {activeGhost === ghost.id && (
+                  <span className="ghost-pill-seed">{ghost.seed}</span>
+                )}
               </button>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </section>
 
-        {/* ===== FOOTER ===== */}
-        <footer className="portal-footer">
-          <span className="portal-tagline">In service of all humans being.</span>
-          <a
-            href="https://job-deck-indol.vercel.app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="portal-deck-link"
-          >
-            The Deck →
-          </a>
-        </footer>
       </div>
-
-      {/* Last stop. You've read the entire source code of a species-level upgrade.
-           That's either dedication or procrastination. Both are welcome here.
-           See you Sunday. */}
     </>
   );
 }

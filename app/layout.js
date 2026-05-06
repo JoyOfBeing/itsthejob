@@ -2,7 +2,7 @@ import "./globals.css";
 
 export const metadata = {
   title: "J.O.B. — The New Human Resources",
-  description: "What becomes possible when being human is the job?",
+  description: "What happens when being IS the job?",
 };
 
 export default function RootLayout({ children }) {
